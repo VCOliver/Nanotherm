@@ -1,0 +1,47 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.so
+*.pyd
+*.pyo
+
+# Virtual environments (if ever created by Poetry or venv)
+.venv/
+env/
+venv/
+
+# Conda environment lock
+conda-meta/
+*.conda
+*.env
+
+# Poetry
+poetry.lock  # Optional — see note below
+
+# MkDocs build output
+site/
+
+# Editor/IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Logs and misc
+*.log
+
+# Jupyter notebooks checkpoints (if applicable)
+.ipynb_checkpoints/
+
+# Tests cache
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# mkdocs-material search index
+search/
