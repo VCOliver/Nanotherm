@@ -33,6 +33,7 @@ Thumbs.db
 
 # Logs and misc
 *.log
+.reuse/
 
 # Jupyter notebooks checkpoints (if applicable)
 .ipynb_checkpoints/

@@ -1,3 +1,4 @@
+
 # !/usr/bin/env python3
 #  -*- coding: utf-8 -*-
 #
@@ -10,3 +11,8 @@
 #      http://www.apache.org/licenses/LICENSE-2.0
 #
 
+def main():
+    ...
+    
+if __name__=='__main__':
+    main()

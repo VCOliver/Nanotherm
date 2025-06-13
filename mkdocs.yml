@@ -1,0 +1,64 @@
+site_name: Nanotherm Docs
+site_description: Documentação para a nova versão do SOFIA, o Nanotherm
+site_author: Victor Cruz de Oliveira
+repo_url: https://github.com/VCOliver/Nanotherm
+
+docs_dir: docs           
+site_dir: site 
+
+theme:
+  name: material
+  custom_dir: overrides
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - toc.integrate
+    - toc.follow
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.footer
+    - navigation.instant
+    - navigation.top
+    - content.code.annotate
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: purple
+      accent: purple
+      toggle:
+        icon: custom-icons/icon_night
+        name: Modo Claro
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: purple
+      accent: purple
+      toggle:
+        icon: custom-icons/icon_light
+        name: Modo Escuro
+
+extra:
+  social:
+    - icon: fontawesome/brands/mastodon
+      link: https://fosstodon.org/@squidfunk
+
+extra_javascript:
+  - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+
+plugins:
+  - search: 
+      lang: pt-BR
+  - autolinks
+  - search
+  - mkdocstrings
+
+
+markdown_extensions:
+  - pymdownx.emoji:
+        emoji_index: !!python/name:material.extensions.emoji.twemoji
+        emoji_generator: !!python/name:material.extensions.emoji.to_svg
+        options:
+          custom_icons:
+            - overrides/.icons
+
+nav:
+  - Home: index.md

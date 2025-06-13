@@ -20,13 +20,20 @@ packages = [{include = "nanotherm", from = "src"}]
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.0"
 pandas = "^2.3.0"
+pre-commit = "^4.2.0"
 
 
 [tool.poetry.group.docs.dependencies]
 mkdocs = "^1.6.1"
 mkdocs-material = "^9.6.14"
 mkdocstrings = {extras = ["python"], version = "^0.29.1"}
+pymdown-extensions = "^10.15"
+python-markdown-math = "^0.9"
+mkdocs-autolinks-plugin = "^0.7.1"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]# This creates a 'serve' command that runs 'mkdocs serve'
+serve = "mkdocs:serve" 
