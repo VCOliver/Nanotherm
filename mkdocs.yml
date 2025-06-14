@@ -52,7 +52,22 @@ plugins:
   - search: 
       lang: pt-BR
   - autolinks
-  - mkdocstrings
+  - mkdocstrings:
+      handlers:
+        python:
+          # Tell mkdocstrings where to find the source code
+          paths: [src]  
+          # All rendering and parsing options go inside this 'options' key.
+          options:
+            show_root_heading: true
+            show_root_full_path: false
+            members_order: source
+            group_by_category: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            show_signature_annotations: true
+            separate_signature: true
+
 
 
 markdown_extensions:
@@ -63,5 +78,9 @@ markdown_extensions:
           custom_icons:
             - overrides/.icons
 
+watch:
+  - src
+
 nav:
   - Home: index.md
+  - API Reference: reference.md
