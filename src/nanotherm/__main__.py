@@ -65,6 +65,8 @@ def setup_logging(mode: str) -> None:
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
         handlers=handlers
     )
+    
+logger = logging.getLogger(__name__)
 
 def main():
     """
@@ -72,4 +74,9 @@ def main():
     
     Initializes the application and starts the main processing loop.
     """
-    ...
+    setup_logging('debug')
+    logger.info("Nanotherm application started in debug mode.")
+    print("Hello, world!")
+    
+if __name__=='__main__':
+    main()
