@@ -35,6 +35,10 @@ theme:
       toggle:
         icon: custom-icons/icon_light
         name: Modo Escuro
+  extra:
+    version:
+      provider: mike
+      default: latest
 
 extra:
   social:
@@ -48,7 +52,6 @@ plugins:
   - search: 
       lang: pt-BR
   - autolinks
-  - search
   - mkdocstrings
 
 
