@@ -4,8 +4,8 @@ format = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
 date_format = "%d-%m-%Y %H:%M:%S"
 
 [pid]
-kp = 2.5
-ki = 0.1
+kp = 1.0
+ki = 0.2
 kd = 0.05
 
 # This should be deleted later

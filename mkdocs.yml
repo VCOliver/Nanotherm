@@ -83,4 +83,8 @@ watch:
 
 nav:
   - Home: index.md
-  - API Reference: reference.md
+  - About: about.md
+  - API Reference: 
+    - config: reference/config.md
+    - entry_point: reference/main.md
+    - app: reference/app.md

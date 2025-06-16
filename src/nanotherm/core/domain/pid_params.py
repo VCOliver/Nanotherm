@@ -1,6 +1,3 @@
-# !/usr/bin/env python3
-#  -*- coding: utf-8 -*-
-#
 #  Copyright 2025 Metala Nanofluidos
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
@@ -8,7 +5,6 @@
 #  You may obtain a copy of the License at
 #
 #      http://www.apache.org/licenses/LICENSE-2.0
-#
 
 from dataclasses import dataclass
 
@@ -21,3 +17,11 @@ class PIDParams:
     kp: float
     ki: float
     kd: float
+    
+    def __str__(self) -> str:
+        """Return a user-friendly string representation of PID parameters."""
+        return f"PID(Kp={self.kp}, Ki={self.ki}, Kd={self.kd})"
+    
+    def __repr__(self) -> str:
+        """Return a detailed string representation for debugging."""
+        return f"PIDParams(kp={self.kp}, ki={self.ki}, kd={self.kd})"

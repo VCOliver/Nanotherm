@@ -1,6 +1,3 @@
-# !/usr/bin/env python3
-#  -*- coding: utf-8 -*-
-#
 #  Copyright 2025 Metala Nanofluidos
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
@@ -10,14 +7,34 @@
 #      http://www.apache.org/licenses/LICENSE-2.0
 #
 
+"""
+Logging configuration module for nanotherm.
+
+This module provides logging setup functionality with support for different
+logging levels, file rotation, and format configuration.
+"""
+
 import logging
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
+from typing import Dict, Any
 
 
-def setup_logging(config: dict[str]) -> None:
+def setup_logging(config: Dict[str, Any]) -> None:
     """
-    setup
+    Configure the application's logging system.
+
+    Args:
+        config: Dictionary containing logging configuration with keys:
+            - level: Logging level ("DEBUG" or "INFO")
+            - format: Log message format string
+            - date_format: Date format string for timestamps
+
+    The function sets up:
+        - Console logging for all modes
+        - File logging with rotation (max 3 files of 1MB each)
+        - Debug logs in project/logs/debug.log for debug mode
+        - Production logs in /var/log/myproj.log for deploy mode
     """
     level = logging.DEBUG if config["level"] == "DEBUG" else logging.INFO
     format = config["format"]
@@ -47,7 +64,7 @@ def setup_logging(config: dict[str]) -> None:
 
     logging.basicConfig(
         level=level,
-        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+        format=format,
         datefmt=date_format,
         handlers=handlers
     )

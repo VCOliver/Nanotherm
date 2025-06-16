@@ -266,6 +266,28 @@ test = ["Pillow", "contourpy[test-no-images]", "matplotlib"]
 test-no-images = ["pytest", "pytest-cov", "pytest-rerunfailures", "pytest-xdist", "wurlitzer"]
 
 [[package]]
+name = "control"
+version = "0.10.1"
+description = "Python Control Systems Library"
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = [
+    {file = "control-0.10.1-py3-none-any.whl", hash = "sha256:ff4c7620addb7edcafa24f712b9cad61dcdf50a40018f16b8dcb0b26c7774524"},
+    {file = "control-0.10.1.tar.gz", hash = "sha256:3bba142c9274d896efda8c9a21aaf61dd38d673d6d40714a7989d143428e738c"},
+]
+
+[package.dependencies]
+matplotlib = ">=3.6"
+numpy = ">=1.23"
+scipy = ">=1.8"
+
+[package.extras]
+cvxopt = ["cvxopt (>=1.2.0)"]
+slycot = ["slycot (>=0.4.0)"]
+test = ["pytest", "pytest-timeout", "ruff"]
+
+[[package]]
 name = "cycler"
 version = "0.12.1"
 description = "Composable style cycles"
@@ -1732,4 +1754,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12.11"
-content-hash = "32668aded91e3799c16b7cd446636633f20216ae1f14000257c34d52f4c16bab"
+content-hash = "e7e3dc4e4a5d8223a4fea6d4744b22bd6b7806be0c28900e65d9bd3ce46f2ae2"

@@ -1,0 +1,137 @@
+#  Copyright 2025 Metala Nanofluidos
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+
+"""
+PID controller implementation.
+
+Provides a discrete-time PID controller using transfer function representation.
+"""
+
+import control as ctrl
+import numpy as np
+from nanotherm.core.entities.controller import IController
+from nanotherm.core.domain.pid_params import PIDParams
+import logging
+from typing import Tuple
+
+log = logging.getLogger(__name__)
+
+class PIDController(IController):
+    """
+    A discrete-time PID controller implemented as a transfer function C(z).
+    """
+    
+    def __init__(self, gains: PIDParams, setpoint: float, Ts: float) -> None:
+        self.kp = gains.kp
+        self.ki = gains.ki
+        self.kd = gains.kd
+        self._setpoint = setpoint
+        self.Ts = Ts
+        self._tf = self._build_tf()
+        self._last_error = 0.0
+        self._integral = 0.0
+        
+        log.debug(f'Controller instance created with setpoint = {self._setpoint} and sampling time = {self.Ts}')
+    
+    def _build_tf(self) -> ctrl.TransferFunction:
+        """
+        Construct the discrete PID transfer function.
+        
+        The transfer function is built as the sum of three terms:
+            C(z) = C_p + C_i + C_d
+        where:
+            C_p = Kp                     (proportional term)
+            C_i = Ki * Ts / (z - 1)      (integral term)
+            C_d = Kd * (z - 1) / Ts      (derivative term)
+            
+        Returns:
+            The complete discrete-time PID transfer function
+        """
+        # Proportional term
+        C_p = ctrl.TransferFunction([self.kp], [1], self.Ts)
+
+        # Integral term: Ki * Ts / (z - 1)
+        C_i = ctrl.TransferFunction([self.ki * self.Ts], [1, -1], self.Ts)
+
+        # Derivative term: Kd * (z - 1) / Ts
+        C_d = ctrl.TransferFunction([self.kd, -self.kd], [self.Ts, 0], self.Ts)
+
+        # Sum all terms
+        return C_p + C_i + C_d
+    
+    @property
+    def transferFunction(self) -> ctrl.TransferFunction:
+        """
+        Get the controller's transfer function representation.
+        
+        Returns:
+            The discrete-time transfer function C(z) of the controller
+        """
+        return self._tf
+    
+    @property
+    def setpoint(self) -> float:
+        """
+        Get the current target value for the controlled variable.
+        
+        Returns:
+            The current setpoint value
+        """
+        return self._setpoint
+    
+    @setpoint.setter
+    def setpoint(self, value: float) -> None:
+        """
+        Set a new target value and reset internal controller states.
+        
+        Args:
+            value: New setpoint value for the controller
+            
+        Notes:
+            Resets integral and error memory to avoid bumps in control action
+        """
+        self._setpoint = value
+        self._last_error = 0.0
+        self._integral = 0.0
+        
+    def compute(self, measurement: float) -> float:
+        """
+        Compute control action based on current measurement.
+        
+        Args:
+            measurement: Current value of the controlled variable
+            
+        Returns:
+            Control action to be applied to the system
+            
+        Notes:
+            Uses the transfer function representation to compute the
+            control action from the current error signal
+        """
+        error = self.setpoint - measurement
+        # Apply control law using transfer function
+        u = ctrl.forced_response(self._tf, T=[0, self.Ts], U=[error])
+        return float(u.outputs[-1])
+
+    def step_response(self, t_final: float) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Compute the step response of the controller.
+        
+        Args:
+            t_final: Final time for the simulation in seconds
+            
+        Returns:
+            A tuple containing:
+                - Time points array
+                - Controller output response array
+                
+        Notes:
+            Useful for analyzing controller behavior and tuning
+        """
+        t = np.arange(0, t_final + self._tf.dt, self._tf.dt)
+        return ctrl.step_response(self._tf, t)

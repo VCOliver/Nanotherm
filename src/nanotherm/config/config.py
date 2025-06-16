@@ -1,6 +1,3 @@
-# !/usr/bin/env python3
-#  -*- coding: utf-8 -*-
-#
 #  Copyright 2025 Metala Nanofluidos
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
@@ -10,12 +7,31 @@
 #      http://www.apache.org/licenses/LICENSE-2.0
 #
 
-from typing import Any
+"""
+Configuration loader module for nanotherm.
+
+This module handles loading and parsing of the application configuration
+from TOML files. It provides functionality to read and validate configuration
+settings used throughout the application.
+"""
+
+from typing import Any, Dict
 import toml
+from pathlib import Path
 
-TOML_PATH="src/nanotherm/config.toml"
+TOML_PATH = Path("src/nanotherm/config.toml")
 
-def load_config() -> dict[str, Any]:
+def load_config() -> Dict[str, Any]:
+    """
+    Load application configuration from TOML file.
+
+    Returns:
+        Dict[str, Any]: Configuration dictionary containing all application settings
+
+    Raises:
+        FileNotFoundError: If the config.toml file cannot be found
+        toml.TomlDecodeError: If the TOML file contains syntax errors
+    """
     # The file is opened in normal text mode, e.g., "r"
     try:
         with open(TOML_PATH, "r") as f:
