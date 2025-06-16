@@ -1,5 +1,5 @@
 # Command-Line Reference
 
-This page documents the main entry point for the `nanotherm` command-line tool.
+This page documents the main entry point for `nanotherm`.
 
 ::: nanotherm.__main__

@@ -10,3 +10,13 @@
 #      http://www.apache.org/licenses/LICENSE-2.0
 #
 
+import logging
+
+log = logging.getLogger(__name__)
+
+class App:
+    def __init__(self, config: dict[str]):
+        log.info('Starting main application.')
+        
+    def run(self):
+        print('Hello, world!')

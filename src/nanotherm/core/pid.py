@@ -10,3 +10,14 @@
 #      http://www.apache.org/licenses/LICENSE-2.0
 #
 
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class PIDParams:
+    """
+    Holds the proportional, integral, and derivative gains
+    for a PID controller.
+    """
+    kp: float
+    ki: float
+    kd: float
