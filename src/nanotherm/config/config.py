@@ -16,12 +16,14 @@ settings used throughout the application.
 """
 
 from typing import Any, Dict
+import logging
 import toml
 from pathlib import Path
+from nanotherm.config.platform import HardwareType
 
 TOML_PATH = Path("src/nanotherm/config.toml")
 
-def load_config() -> Dict[str, Any]:
+def load_config(platform: HardwareType) -> Dict[str, Any]:
     """
     Load application configuration from TOML file.
 
@@ -37,11 +39,18 @@ def load_config() -> Dict[str, Any]:
         with open(TOML_PATH, "r") as f:
             config_data = toml.load(f)
 
+
         return config_data
 
     except FileNotFoundError as e:
-        print(e)
-        print("Error: config.toml not found.")
+        #print(e)
+        logging.basicConfig(level=logging.CRITICAL)
+        log = logging.getLogger(__name__)
+        log.critical("Error: config.toml not found.")
+        exit(1)
     except toml.TomlDecodeError as e:
-        print(e)
-        print("Error: Could not decode the TOML file. Check for syntax errors.")
+        #print(e)
+        logging.basicConfig(level=logging.CRITICAL)
+        log = logging.getLogger(__name__)
+        log.critical("Error: Could not decode the TOML file. Check for syntax errors.")
+        exit(1)

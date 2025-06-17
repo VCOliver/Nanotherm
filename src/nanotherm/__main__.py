@@ -19,7 +19,8 @@ It provides functionality to set up logging based on different running modes
 """
 
 from nanotherm.config import load_config
-from nanotherm.config.logger import setup_logging   
+from nanotherm.config.platform import Platform
+from nanotherm.config.logger import setup_logging, test_setup   
 from nanotherm.app import App
 import logging 
 
@@ -31,8 +32,12 @@ def main():
     Initializes the application and starts the main processing loop.
     """
     
-    config = load_config()
+    platform = Platform.get_hardware_type()
+    config = load_config(platform)
     setup_logging(config['logging'])
+    
+    test_setup()
+    
     logger = logging.getLogger(__name__)
     logger.info("Finished setup.")
     

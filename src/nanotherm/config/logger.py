@@ -15,32 +15,50 @@ logging levels, file rotation, and format configuration.
 """
 
 import logging
+import colorlog
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from typing import Dict, Any
 
 
 def setup_logging(config: Dict[str, Any]) -> None:
-    """
-    Configure the application's logging system.
-
-    Args:
-        config: Dictionary containing logging configuration with keys:
-            - level: Logging level ("DEBUG" or "INFO")
-            - format: Log message format string
-            - date_format: Date format string for timestamps
-
-    The function sets up:
-        - Console logging for all modes
-        - File logging with rotation (max 3 files of 1MB each)
-        - Debug logs in project/logs/debug.log for debug mode
-        - Production logs in /var/log/myproj.log for deploy mode
-    """
+    """Configure the application's logging system."""
     level = logging.DEBUG if config["level"] == "DEBUG" else logging.INFO
     format = config["format"]
     date_format = config['date_format']
-    handlers = [logging.StreamHandler()]
+    
+    # Split format string to insert colors only around levelname
+    parts = format.split("[%(levelname)s]")
+    colored_format = (
+        f"{parts[0]}%(log_color)s[%(levelname)s]%(reset)s{parts[1]}"
+    )
+    
+    # Console handler with colors
+    console_handler = logging.StreamHandler()
+    console_formatter = colorlog.ColoredFormatter(
+        fmt=colored_format,
+        datefmt=date_format,
+        log_colors={
+            'DEBUG':    'cyan',
+            'INFO':     'white',
+            'WARNING': 'yellow',
+            'ERROR':    'light_red',
+            'CRITICAL': 'light_yellow',
+        },
+        secondary_log_colors={
+            'message': {
+                'CRITICAL': 'red'
+            }
+        }
+    )
+    console_handler.setFormatter(console_formatter)
 
+    # Direct configuration of root logger
+    root_logger = logging.getLogger()
+    root_logger.setLevel(level)
+    root_logger.addHandler(console_handler)
+
+    # File handler with plain formatting
     if config["level"] == "DEBUG":
         # write debug logs into project-root/logs/debug.log
         project_root = Path(__file__).parent.parent.parent.parent
@@ -48,23 +66,32 @@ def setup_logging(config: Dict[str, Any]) -> None:
         log_dir.mkdir(exist_ok=True)
         debug_log = log_dir / "debug.log"
 
-        handlers.append(RotatingFileHandler(
+        file_handler = RotatingFileHandler(
             debug_log,
             maxBytes=1_000_000,
             backupCount=3
-        ))
+        )
+        file_handler.setFormatter(logging.Formatter(fmt=format, datefmt=date_format))
+        root_logger.addHandler(file_handler)
 
     elif config["level"] == "deploy":
-        # production logging to /var/log/myproj.log as before
-        handlers.append(RotatingFileHandler(
+        # production logging to /var/log/myproj.log
+        file_handler = RotatingFileHandler(
             "/var/log/myproj.log",
             maxBytes=1_000_000,
             backupCount=3
-        ))
-
-    logging.basicConfig(
-        level=level,
-        format=format,
-        datefmt=date_format,
-        handlers=handlers
-    )
+        )
+        file_handler.setFormatter(logging.Formatter(fmt=format, datefmt=date_format))
+        root_logger.addHandler(file_handler)
+        
+def test_setup():
+    """
+    For testing only
+    """
+    
+    log = logging.getLogger()
+    log.info('This is a INFO log')
+    log.debug('This is a DEBUG log')
+    log.warning('This is a WARNING log')
+    log.error('This is a ERROR log')
+    log.critical('This is a CRITICAL log')
