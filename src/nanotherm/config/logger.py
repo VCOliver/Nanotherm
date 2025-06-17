@@ -27,6 +27,10 @@ def setup_logging(config: Dict[str, Any]) -> None:
     format = config["format"]
     date_format = config['date_format']
     
+    # Silence matplotlib and PIL debug messages
+    logging.getLogger('matplotlib').setLevel(logging.WARNING)
+    logging.getLogger('PIL').setLevel(logging.WARNING)
+    
     # Split format string to insert colors only around levelname
     parts = format.split("[%(levelname)s]")
     colored_format = (

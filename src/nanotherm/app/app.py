@@ -51,3 +51,8 @@ class App:
         gains = list(self.config['pid'].values())[:3]
         pid_params = PIDParams(*gains)
         log.debug(f'PID gains set to {pid_params}')
+        
+        controller = PIDController(pid_params)
+        controller.plot_step_response(60, save=True)
+        
+        

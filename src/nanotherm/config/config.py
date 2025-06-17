@@ -39,7 +39,7 @@ def load_config(platform: HardwareType) -> Dict[str, Any]:
         with open(TOML_PATH, "r") as f:
             config_data = toml.load(f)
 
-
+        config_data['platform'] = platform
         return config_data
 
     except FileNotFoundError as e:

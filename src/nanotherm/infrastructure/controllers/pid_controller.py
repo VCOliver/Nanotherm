@@ -14,10 +14,13 @@ Provides a discrete-time PID controller using transfer function representation.
 
 import control as ctrl
 import numpy as np
+import matplotlib.pyplot as plt
 from nanotherm.core.entities.controller import IController
 from nanotherm.core.domain.pid_params import PIDParams
 import logging
 from typing import Tuple
+from pathlib import Path
+from datetime import datetime
 
 log = logging.getLogger(__name__)
 
@@ -26,7 +29,7 @@ class PIDController(IController):
     A discrete-time PID controller implemented as a transfer function C(z).
     """
     
-    def __init__(self, gains: PIDParams, setpoint: float, Ts: float) -> None:
+    def __init__(self, gains: PIDParams, setpoint: float = 1.0, Ts: float = 1.0) -> None:
         self.kp = gains.kp
         self.ki = gains.ki
         self.kd = gains.kd
@@ -135,3 +138,41 @@ class PIDController(IController):
         """
         t = np.arange(0, t_final + self._tf.dt, self._tf.dt)
         return ctrl.step_response(self._tf, t)
+
+    def plot_step_response(self, t_final: float, show: bool = True, save: bool = False) -> None:
+        """
+        Plot and optionally save the step response of the controller.
+
+        Args:
+            t_final: Final time for the simulation in seconds
+            show: Whether to display the plot immediately (default: True)
+            save: Whether to save the plot to file (default: False)
+        """
+        t, y = self.step_response(t_final)
+        
+        plt.figure(figsize=(10, 6))
+        plt.plot(t, y, 'b-', linewidth=2, label='Controller Output')
+        plt.grid(True)
+        plt.title(f'PID Controller Step Response (Kp={self.kp}, Ki={self.ki}, Kd={self.kd})')
+        plt.xlabel('Time [s]')
+        plt.ylabel('Output')
+        plt.legend()
+        
+        if save:
+            # Create plots directory in project root
+            project_root = Path(__file__).parent.parent.parent.parent.parent
+            plots_dir = project_root / "plots"
+            plots_dir.mkdir(exist_ok=True)
+            
+            # Generate filename with timestamp and parameters
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"pid_step_response_{timestamp}.png"
+            filepath = plots_dir / filename
+            
+            plt.savefig(filepath)
+            log.info(f"Step response plot saved to: {filepath.relative_to(project_root)}")
+        
+        if show:
+            plt.show()
+        
+        plt.close()

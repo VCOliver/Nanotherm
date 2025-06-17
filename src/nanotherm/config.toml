@@ -10,3 +10,6 @@ kd = 0.05
 
 # This should be deleted later
 setpoint = 1.0
+
+[plots]
+output_dir = "plots"

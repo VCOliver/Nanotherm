@@ -36,8 +36,6 @@ def main():
     config = load_config(platform)
     setup_logging(config['logging'])
     
-    test_setup()
-    
     logger = logging.getLogger(__name__)
     logger.info("Finished setup.")
     
