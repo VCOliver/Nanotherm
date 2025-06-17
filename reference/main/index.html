@@ -665,8 +665,7 @@ It provides functionality to set up logging based on different running modes
 
             <details class="quote">
               <summary>Source code in <code>src/nanotherm/__main__.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">27</span>
-<span class="normal">28</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">28</span>
 <span class="normal">29</span>
 <span class="normal">30</span>
 <span class="normal">31</span>
@@ -678,15 +677,20 @@ It provides functionality to set up logging based on different running modes
 <span class="normal">37</span>
 <span class="normal">38</span>
 <span class="normal">39</span>
-<span class="normal">40</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Main entry point for the nanotherm application.</span>
 
 <span class="sd">    Initializes the application and starts the main processing loop.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">()</span>
+    <span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="o">.</span><span class="n">get_hardware_type</span><span class="p">()</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="n">platform</span><span class="p">)</span>
     <span class="n">setup_logging</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;logging&#39;</span><span class="p">])</span>
+
     <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Finished setup.&quot;</span><span class="p">)</span>
 
