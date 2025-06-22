@@ -1,15 +1,21 @@
 [logging]
 level = "DEBUG"
-format = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+format = "%(asctime)s [%(levelname)s] %(module)s: %(message)s"
 date_format = "%d-%m-%Y %H:%M:%S"
 
 [pid]
-kp = 1.0
-ki = 0.2
-kd = 0.05
+kp = -0.3935
+ki = 0.05
+kd = -0.061101
+
+[liver_tf]
+num = [0.1632, -0.1561]
+den = [1.0, -1.837, 0.8442]
 
 # This should be deleted later
+[control_system]
 setpoint = 1.0
+sampling_time = 0.010 # Seconds
 
 [plots]
 output_dir = "plots"

@@ -18,6 +18,8 @@ import logging
 from typing import Dict, Any
 from nanotherm.core.domain.pid_params import PIDParams
 from nanotherm.infrastructure.controllers import PIDController
+from nanotherm.core.entities.DTransferFunction import DiscreteTransferFunction
+from nanotherm.services.control_loop import ControlLoop
 
 log = logging.getLogger(__name__)
 
@@ -48,11 +50,19 @@ class App:
         This method starts the main processing loop and handles the core
         application functionality.
         """
-        gains = list(self.config['pid'].values())[:3]
+        gains = list(self.config['pid'].values())
         pid_params = PIDParams(*gains)
         log.debug(f'PID gains set to {pid_params}')
+        Ts = self.config['control_system']['sampling_time']
         
-        controller = PIDController(pid_params)
-        controller.plot_step_response(60, save=True)
+        plant_tf = self.config['liver_tf']
+        plant = DiscreteTransferFunction(plant_tf['num'], plant_tf['den'], Ts)
         
+        controller = PIDController(pid_params, plant, Ts=Ts)
         
+        # Example: run control loop for a few iterations (or implement a stop condition)
+        loop = ControlLoop(controller, sample_time=Ts)
+        
+        # loop.start()  # Uncomment to run the control loop
+        controller.plot_step_response(120, save=True)
+

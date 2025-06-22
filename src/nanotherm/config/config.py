@@ -49,7 +49,7 @@ def load_config(platform: HardwareType) -> Dict[str, Any]:
         log.critical("Error: config.toml not found.")
         exit(1)
     except toml.TomlDecodeError as e:
-        #print(e)
+        print(e)
         logging.basicConfig(level=logging.CRITICAL)
         log = logging.getLogger(__name__)
         log.critical("Error: Could not decode the TOML file. Check for syntax errors.")

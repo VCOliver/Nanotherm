@@ -14,11 +14,6 @@ import time
 from typing import Protocol
 from nanotherm.infrastructure.controllers import PIDController
 
-class Plant(Protocol):
-    """Protocol defining required plant interface."""
-    def measure(self) -> float: ...
-    def actuate(self, value: float) -> None: ...
-
 class ControlLoop:
     """
     Main control loop service.
@@ -27,9 +22,8 @@ class ControlLoop:
     measurement acquisition, and actuation.
     """
     
-    def __init__(self, controller: PIDController, plant: Plant, sample_time: float):
+    def __init__(self, controller: PIDController, sample_time: float):
         self.controller = controller
-        self.plant = plant
         self.sample_time = sample_time
         self._running = False
         

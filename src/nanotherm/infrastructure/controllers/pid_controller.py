@@ -15,6 +15,7 @@ Provides a discrete-time PID controller using transfer function representation.
 import control as ctrl
 import numpy as np
 import matplotlib.pyplot as plt
+from nanotherm.core.entities.DTransferFunction import DiscreteTransferFunction
 from nanotherm.core.entities.controller import IController
 from nanotherm.core.domain.pid_params import PIDParams
 import logging
@@ -29,10 +30,11 @@ class PIDController(IController):
     A discrete-time PID controller implemented as a transfer function C(z).
     """
     
-    def __init__(self, gains: PIDParams, setpoint: float = 1.0, Ts: float = 1.0) -> None:
+    def __init__(self, gains: PIDParams, plant: DiscreteTransferFunction, setpoint: float = 1.0, Ts: float = 1.0) -> None:
         self.kp = gains.kp
         self.ki = gains.ki
         self.kd = gains.kd
+        self.plant = plant
         self._setpoint = setpoint
         self.Ts = Ts
         self._tf = self._build_tf()
@@ -43,17 +45,10 @@ class PIDController(IController):
     
     def _build_tf(self) -> ctrl.TransferFunction:
         """
-        Construct the discrete PID transfer function.
         
-        The transfer function is built as the sum of three terms:
-            C(z) = C_p + C_i + C_d
-        where:
-            C_p = Kp                     (proportional term)
-            C_i = Ki * Ts / (z - 1)      (integral term)
-            C_d = Kd * (z - 1) / Ts      (derivative term)
             
         Returns:
-            The complete discrete-time PID transfer function
+            The complete discrete-time PID controller transfer function
         """
         # Proportional term
         C_p = ctrl.TransferFunction([self.kp], [1], self.Ts)
@@ -64,8 +59,10 @@ class PIDController(IController):
         # Derivative term: Kd * (z - 1) / Ts
         C_d = ctrl.TransferFunction([self.kd, -self.kd], [self.Ts, 0], self.Ts)
 
-        # Sum all terms
-        return C_p + C_i + C_d
+        Hz = C_p + C_i + C_d # Full PID Transfer Function
+        Gz = self.plant.tf   # Plant transfer function
+
+        return ctrl.feedback(Hz * Gz, -1)
     
     @property
     def transferFunction(self) -> ctrl.TransferFunction:
@@ -119,7 +116,7 @@ class PIDController(IController):
         error = self.setpoint - measurement
         # Apply control law using transfer function
         u = ctrl.forced_response(self._tf, T=[0, self.Ts], U=[error])
-        return float(u.outputs[-1])
+        return float(u.outputs[-1]) 
 
     def step_response(self, t_final: float) -> Tuple[np.ndarray, np.ndarray]:
         """

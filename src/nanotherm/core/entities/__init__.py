@@ -7,3 +7,4 @@
 #      http://www.apache.org/licenses/LICENSE-2.0
 
 from .controller import *
+from ..domain.transferFunction import *
