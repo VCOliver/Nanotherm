@@ -34,6 +34,12 @@ Thumbs.db
 # Logs and misc
 *.log
 .reuse/
+logs/*
+!/logs/.gitkeep
+plots/*
+!/plots/.gitkeep
+data/*
+!/data/.gitkeep
 
 # Jupyter notebooks checkpoints (if applicable)
 .ipynb_checkpoints/

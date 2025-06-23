@@ -1,29 +1,84 @@
 # **Bem-vindo à Documentação do Nanotherm**
 
-## **Sobre a Metala**
+O Nanotherm é uma plataforma moderna para ablação por radiofrequência (RFA) desenvolvida pela Metala Nanofluidos, baseada no projeto [SOFIA](https://noticias.unb.br/117-pesquisa/2018-prototipo-desenvolvido-na-unb-ganha-premio-de-inovacao). Esta documentação detalha como instalar, configurar e usar o sistema.
 
-A **Metala** é uma startup de tecnologia focada em revolucionar a área da saúde com soluções de ponta. Nossa missão é desenvolver dispositivos médicos inovadores que aumentem a eficácia dos tratamentos, garantam a segurança dos pacientes e democratizem o acesso a tecnologias avançadas.
+## Instalação
 
-Para saber mais sobre nossa visão e outros projetos, visite nosso site: [metalanano.com](https://metalanano.com/)
+O Nanotherm requer Python 3.12 ou superior. Recomendamos usar o Conda para gerenciar o ambiente:
 
----
+```bash
+# Clone o repositório
+git clone https://github.com/VCOliver/Nanotherm
+cd Nanotherm
 
-## **O Projeto Nanotherm**
+# Crie e ative o ambiente conda
+conda env create -f environment.yml
+conda activate nanotherm-venv
 
-O **Nanotherm** é nossa principal iniciativa para modernizar a tecnologia de **Ablação por Radiofrequência (RFA)**, um procedimento minimamente invasivo para o tratamento de tumores hepáticos.
+# Instale o pacote em modo de desenvolvimento
+poetry install
+```
 
-### **O Desafio**
+## Configuração
 
-[cite_start]A RFA tradicional é altamente eficaz em tumores de até 3 cm, mas enfrenta limitações em lesões maiores devido ao fenômeno de ***roll-off***: a carbonização do tecido que interrompe a entrega de energia e impede a destruição completa do tumor[cite: 43, 140, 375, 1702].
+O sistema usa um arquivo TOML para configuração. Um exemplo básico:
 
-### **Nossa Solução**
+```toml
+[logging]
+level = "DEBUG"  # Ou "deploy" para produção
+format = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+date_format = "%d-%m-%Y %H:%M:%S"
 
-O Nanotherm aborda esse desafio com uma plataforma de hardware e software totalmente modernizada. [cite_start]Através de **protocolos de energia avançados**, como ondas pulsadas, e o desenvolvimento de **eletrodos otimizados** de NiTi[cite: 1451, 1583, 1585], nossa tecnologia controla o aquecimento do tecido para retardar o *roll-off*.
+[pid]
+kp = 1.0
+ki = 0.2
+kd = 0.05
+```
 
-O resultado é uma aplicação de energia mais prolongada e eficiente, permitindo a criação de zonas de necrose maiores e mais uniformes, tornando o tratamento de tumores grandes uma realidade segura e eficaz.
+## Uso Básico
 
----
+Para executar o Nanotherm:
 
-### **Navegue pela Documentação**
+```bash
+# Via poetry
+poetry run nanotherm
 
-Use o menu ao lado para explorar os detalhes técnicos, guias de instalação e referências da API do Nanotherm.
+# Ou diretamente após instalação
+python -m nanotherm
+```
+
+## Estrutura do Projeto
+
+```
+ src/nanotherm/           # Código fonte principal
+    ├── app/                # Aplicação principal e entry points
+    ├── core/              # Core business logic
+    │   ├── domain/       # Domain models and value objects
+    │   └── entities/     # Core business interfaces
+    ├── infrastructure/   # Concrete implementations
+    │   └── controllers/  # Controller implementations
+    ├── services/        # Application services
+    └── config/         # Configuration management
+```
+
+O projeto segue uma arquitetura limpa (Clean Architecture) com separação clara entre:
+- **Domain**: Regras de negócio e interfaces core
+- **Infrastructure**: Implementações concretas
+- **Services**: Orquestração de componentes
+
+## Licença
+
+O Nanotherm é licenciado sob Apache License 2.0. Veja o arquivo LICENSE para mais detalhes.
+
+## Links Úteis
+
+- [Código fonte](https://github.com/VCOliver/Nanotherm)
+- [Documentação da API](reference/main.md)
+- [Sobre o projeto](about.md)
+
+## Suporte
+
+Para suporte ou dúvidas, entre em contato:
+- Email: metala.nanofluidos@gmail.com
+- Site: [metalanano.com](https://metalanano.com)
+

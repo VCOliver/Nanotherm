@@ -1,6 +1,3 @@
-# !/usr/bin/env python3
-#  -*- coding: utf-8 -*-
-#
 #  Copyright 2025 Metala Nanofluidos
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
@@ -10,3 +7,13 @@
 #      http://www.apache.org/licenses/LICENSE-2.0
 #
 
+"""
+Nanotherm application package.
+
+This package contains the core application components and entry points
+for the nanotherm system.
+"""
+
+from .app import App
+
+__all__ = ['App']

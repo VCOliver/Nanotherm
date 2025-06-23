@@ -1,6 +1,6 @@
 [project]
 name = "nanotherm"
-version = "0.0.1.dev0"
+version = "0.1.0"
 description = "A project on Radiofrequency Ablation (RFA) by Metala Nanofluidos"
 authors = [
     {name = "VCOliver",email = "victorcruz.01@gmail.com"}
@@ -10,7 +10,10 @@ requires-python = ">=3.12.11"
 dependencies = [
     "numpy (>=2.3.0,<3.0.0)",
     "scipy (>=1.15.3,<2.0.0)",
-    "matplotlib (>=3.10.3,<4.0.0)"
+    "matplotlib (>=3.10.3,<4.0.0)",
+    "toml (>=0.10.2,<0.11.0)",
+    "control (>=0.10.1,<0.11.0)",
+    "colorlog (>=6.9.0,<7.0.0)"
 ]
 
 [tool.poetry]
@@ -36,5 +39,5 @@ mike = "^2.1.3"
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.poetry.scripts]# This creates a 'serve' command that runs 'mkdocs serve'
-serve = "mkdocs:serve" 
+[tool.poetry.scripts]
+nanotherm = "nanotherm.__main__:main"

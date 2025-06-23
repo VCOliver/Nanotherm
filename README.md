@@ -95,7 +95,7 @@ O projeto Nanotherm encontra-se em fase de desenvolvimento e validação. As ati
 
 Este é um projeto desenvolvido comercialmente pela **Metala**. Para oportunidades de parceria ou contribuição, por favor, entre em contato através do nosso email oficial: metala.nanofluidos@gmail.com.
 
-## Desenvolvido por Metala
+## Desenvolvido pela Metala
 
 O Nanotherm é um projeto de inovação liderado pela Metala, uma startup brasileira que nasceu da paixão por inovação científica e da busca por soluções disruptivas para os desafios da medicina moderna. Fundada por um grupo de especialistas em nanotecnologia, biomedicina, engenharia eletrônica e engenharia biomédica, a Metala combina ciência de ponta com o compromisso de melhorar a qualidade de vida dos pacientes e transformar o futuro do tratamento de câncer. 
 
