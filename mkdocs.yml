@@ -84,7 +84,16 @@ watch:
 nav:
   - Home: index.md
   - About: about.md
-  - API Reference: 
+  - Code Reference: 
     - config: reference/config.md
+    - platform: reference/platform.md
     - entry_point: reference/main.md
     - app: reference/app.md
+    - core:
+      - domain: 
+        - pid_params: reference/core/domain/pid_params.md
+        - transferFunction: reference/core/domain/transferFunction.md
+      - entities:
+        - controller: reference/core/entities/controller.md
+        - Discrete Transfer Function: reference/core/entities/DTransferFunction.md
+    

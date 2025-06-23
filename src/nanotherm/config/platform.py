@@ -14,20 +14,19 @@ hardware platform and operating system the code is running on.
 
 from enum import Enum
 import platform
-from typing import Final
 
 class HardwareType(Enum):
     """Enum representing different types of hardware platforms."""
-    RASPBERRY_PI: Final[str] = "raspberry"
-    DESKTOP: Final[str] = "desktop"
-    MCU: Final[str] = "mcu"
-    UNKNOWN: Final[str] = "unknown"
+    RASPBERRY_PI  = "raspberry"
+    DESKTOP = "desktop"
+    MCU = "mcu"
+    UNKNOWN = "unknown"
 
 class SystemPlatform(Enum):
     """Enum representing different operating system platforms."""
-    LINUX: Final[str] = "linux"
-    WINDOWS: Final[str] = "windows"
-    UNKNOWN: Final[str] = "unknown"
+    LINUX = "linux"
+    WINDOWS = "windows"
+    UNKNOWN = "unknown"
 
 class Platform:
     """Utility class for platform detection and identification."""
