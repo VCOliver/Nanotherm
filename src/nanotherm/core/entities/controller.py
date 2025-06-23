@@ -13,6 +13,9 @@ This module defines the abstract base class that all controllers must implement.
 """
 
 from abc import ABC, abstractmethod
+from typing import Tuple
+import control as ctrl
+import numpy as np
 
 class IController(ABC):
     """
@@ -23,7 +26,7 @@ class IController(ABC):
     """
     
     @abstractmethod
-    def _build_tf(self, ):
+    def _build_tf(self, ) -> ctrl.TransferFunction:
         pass
     
     @abstractmethod
@@ -40,7 +43,7 @@ class IController(ABC):
         pass
 
     @abstractmethod
-    def step_response(self, t_final: float):
+    def step_response(self, t_final: float) -> Tuple[np.ndarray, np.ndarray]:
         """
         Purely for studying purposes
         """

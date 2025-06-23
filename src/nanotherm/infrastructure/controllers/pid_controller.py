@@ -62,7 +62,7 @@ class PIDController(IController):
         Hz = C_p + C_i + C_d # Full PID Transfer Function
         Gz = self.plant.tf   # Plant transfer function
 
-        return ctrl.feedback(Hz * Gz, -1)
+        return ctrl.feedback(Hz * Gz, 1) # type: ignore
     
     @property
     def transferFunction(self) -> ctrl.TransferFunction:
@@ -115,7 +115,7 @@ class PIDController(IController):
         """
         error = self.setpoint - measurement
         # Apply control law using transfer function
-        u = ctrl.forced_response(self._tf, T=[0, self.Ts], U=[error])
+        u = ctrl.forced_response(self._tf, T=[0, self.Ts], U=[error]) # type: ignore
         return float(u.outputs[-1]) 
 
     def step_response(self, t_final: float) -> Tuple[np.ndarray, np.ndarray]:
@@ -133,8 +133,8 @@ class PIDController(IController):
         Notes:
             Useful for analyzing controller behavior and tuning
         """
-        t = np.arange(0, t_final + self._tf.dt, self._tf.dt)
-        return ctrl.step_response(self._tf, t)
+        t = np.arange(0, t_final + self._tf.dt, self._tf.dt) # type: ignore
+        return ctrl.step_response(self._tf, t) # type: ignore
 
     def plot_step_response(self, t_final: float, show: bool = True, save: bool = False) -> None:
         """
