@@ -56,10 +56,17 @@ class Platform:
         machine = platform.machine().lower()
         
         # Check for Raspberry Pi based on node and machine
-        if "raspberrypi" in node and  machine in ("arm", "aarch64"):
+        if "raspberrypi" in node and  machine in ("armv6l", "armv7l", "armv8l", "aarch64"):
             return HardwareType.RASPBERRY_PI
         elif Platform.get_system() in [SystemPlatform.LINUX, SystemPlatform.WINDOWS]:
             return HardwareType.DESKTOP
-        elif "mcu" in node:
-            return HardwareType.MCU
-        return HardwareType.UNKNOWN
+        else:
+            return HardwareType.UNKNOWN
+        
+class HardwareError(OSError):
+    
+    def __init__(self, mensage: str): 
+        message = (
+            f"Unsupported hardware platform: \n'{mensage}'.\n"
+        )
+        super().__init__(message)

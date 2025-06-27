@@ -39,6 +39,7 @@ class PIDController(IController):
         self.Ts = Ts
         self._tf = self._build_tf()
         self._last_error = 0.0
+        self._last_time = None 
         self._integral = 0.0
         
         log.debug(f'Controller instance created with setpoint = {self._setpoint} and sampling time = {self.Ts}')
@@ -99,7 +100,7 @@ class PIDController(IController):
         self._last_error = 0.0
         self._integral = 0.0
         
-    def compute(self, measurement: float) -> float:
+    def compute(self, measurement: float, timestamp: float) -> float:
         """
         Compute control action based on current measurement.
         
@@ -113,6 +114,9 @@ class PIDController(IController):
             Uses the transfer function representation to compute the
             control action from the current error signal
         """
+        
+        dt = timestamp - self._last_time if self._last_time is not None else self.Ts
+        
         error = self.setpoint - measurement
         # Apply control law using transfer function
         u = ctrl.forced_response(self._tf, T=[0, self.Ts], U=[error]) # type: ignore

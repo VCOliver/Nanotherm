@@ -19,6 +19,8 @@ from typing import Dict, Any
 from nanotherm.core.domain.pid_params import PIDParams
 from nanotherm.infrastructure.controllers import PIDController
 from nanotherm.core.entities.DTransferFunction import DiscreteTransferFunction
+from nanotherm.config.platform import Platform, HardwareType, HardwareError
+from nanotherm.infrastructure.gateways.simul_data_gateway import CSV_HALGateway
 from nanotherm.services.control_loop import ControlLoop
 
 log = logging.getLogger(__name__)
@@ -58,10 +60,18 @@ class App:
         plant_tf = self.config['liver_tf']
         plant = DiscreteTransferFunction(plant_tf['num'], plant_tf['den'], Ts)
         
-        controller = PIDController(pid_params, plant, Ts=Ts)
+        setpoint = self.config['control_system']['setpoint']
+        controller = PIDController(pid_params, plant, setpoint=setpoint, Ts=Ts)
+        
+        platform = Platform.get_hardware_type()
+        if platform == HardwareType.DESKTOP:
+            hal = CSV_HALGateway('data/input/combined.csv')
+        else:
+            log.warning('HAL for Raspberry Pi not yet implemented!')
+            raise HardwareError('Raspberry Pi not supported yet. Please use a desktop platform.')
         
         # Example: run control loop for a few iterations (or implement a stop condition)
-        loop = ControlLoop(controller, sample_time=Ts)
+        loop = ControlLoop(controller, sample_time=Ts, gateway=hal)
         
         # loop.start()  # Uncomment to run the control loop
         controller.plot_step_response(120, save=True)

@@ -30,12 +30,13 @@ class IController(ABC):
         pass
     
     @abstractmethod
-    def compute(self, measurement: float) -> float:
+    def compute(self, measurement: float, timestamp: float) -> float:
         """
         Compute the control action based on current measurement.
         
         Args:
             measurement: Current value of the controlled variable
+            timestamp: Current time in seconds since the start of the control loop
             
         Returns:
             Control action to be applied to the system

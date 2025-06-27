@@ -38,8 +38,8 @@ logs/*
 !/logs/.gitkeep
 plots/*
 !/plots/.gitkeep
-data/*
-!/data/.gitkeep
+data/output/*
+!/data/output/.gitkeep
 
 # Jupyter notebooks checkpoints (if applicable)
 .ipynb_checkpoints/

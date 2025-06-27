@@ -21,7 +21,7 @@ den = [1.0, -1.837, 0.8442]
 
 # This should be deleted later
 [control_system]
-setpoint = 1.0
+setpoint = 5.0
 sampling_time = 2.0 # Seconds
 
 [plots]
