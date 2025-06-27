@@ -71,7 +71,7 @@ class App:
             raise HardwareError('Raspberry Pi not supported yet. Please use a desktop platform.')
         
         # Example: run control loop for a few iterations (or implement a stop condition)
-        loop = ControlLoop(controller, sample_time=Ts, gateway=hal)
+        loop = ControlLoop(controller, sample_time=Ts, gateway=hal, simulating=True)
         
         # loop.start()  # Uncomment to run the control loop
         controller.plot_step_response(120, save=True)

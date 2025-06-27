@@ -40,6 +40,7 @@ class CSV_HALGateway(I_HALGateway):
             log.warning('Simulation data is EMPTY.')
             
         self.__index: int = 0
+        self.__reach_end: bool = False
         self._data_len: int = len(simulated_data)
         self._simul_data: pd.DataFrame = simulated_data
         
@@ -68,6 +69,7 @@ class CSV_HALGateway(I_HALGateway):
         if self.__index == self._data_len:
             log.info('No more data to be read from CSV file.')
             log.debug(f'Final index read from {self.__path}: {self.__index}.')
+            self.__reach_end = True
         
         if index_ is None:
             index = self.__index
@@ -98,5 +100,13 @@ class CSV_HALGateway(I_HALGateway):
         """
         log.info(f"Simulated writing {value} to: {output_id}")
 
+    @property
+    def reach_end(self) -> bool:
+        """
+        Check if the end of the simulated data has been reached.
 
+        Returns:
+            bool: True if the end of the data has been reached, False otherwise.
+        """
+        return self.__reach_end
 

@@ -119,7 +119,7 @@ class PIDController(IController):
         
         error = self.setpoint - measurement
         # Apply control law using transfer function
-        u = ctrl.forced_response(self._tf, T=[0, self.Ts], U=[error]) # type: ignore
+        u = ctrl.forced_response(self._tf, T=[0, dt], U=[error]) # type: ignore
         return float(u.outputs[-1]) 
 
     def step_response(self, t_final: float) -> Tuple[np.ndarray, np.ndarray]:
