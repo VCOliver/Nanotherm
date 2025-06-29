@@ -72,6 +72,7 @@ class App:
         
         # Example: run control loop for a few iterations (or implement a stop condition)
         loop = ControlLoop(controller, sample_time=Ts, gateway=hal, simulating=True)
+        loop.start()
         
         # loop.start()  # Uncomment to run the control loop
         controller.plot_step_response(120, save=True)
