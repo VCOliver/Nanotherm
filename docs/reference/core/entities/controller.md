@@ -9,3 +9,8 @@ This module defines the abstract base class for controllers in the control syste
 ## Classes
 
 - `IController`: Abstract base class for control system implementations.
+
+---
+
+**Imported by:**
+- [PID Controller](../infrastructure/pid_controller.md)

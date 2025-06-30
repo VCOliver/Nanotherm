@@ -24,7 +24,7 @@ class I_HALGateway(ABC):
         Read a value from a hardware input or from a specified index.
 
         Args:
-            index (Optional[int]): The index of the input to read. 
+            index_ (Optional[int]): The index of the input to read. 
             input_id (Optional[str]): The id of the column to be read
 
         Returns:

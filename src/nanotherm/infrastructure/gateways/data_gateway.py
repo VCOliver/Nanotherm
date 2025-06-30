@@ -6,3 +6,18 @@
 #
 #      http://www.apache.org/licenses/LICENSE-2.0
 
+import warnings
+
+"""
+Data Gateway interface and implementation placeholder.
+
+..warning::
+    This module is a placeholder and will provide concrete data gateway classes for hardware integration in the future.
+"""
+
+warnings.warn(
+    "The data_gateway module is a placeholder and will be implemented in the future.",
+    category=UserWarning,
+    stacklevel=2
+)
+

@@ -9,3 +9,8 @@ This module defines data structures for representing transfer functions, used in
 ## Classes
 
 - `ITransferFunction`: Abstract representation of a transfer function, with numerator and denominator coefficients.
+
+---
+
+**Imported by:**
+- [Discrete Transfer Function](../entities/DTransferFunction.md)

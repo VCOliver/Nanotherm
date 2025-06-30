@@ -1,6 +1,6 @@
 [project]
 name = "nanotherm"
-version = "0.1.0"
+version = "0.2.1"
 description = "A project on Radiofrequency Ablation (RFA) by Metala Nanofluidos"
 authors = [
     {name = "VCOliver",email = "victorcruz.01@gmail.com"}

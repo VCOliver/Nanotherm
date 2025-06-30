@@ -9,3 +9,9 @@ This module defines data structures for PID parameters used in Control System Mo
 ## Classes
 
 - `PIDParams`: Holds the proportional, integral, and derivative gains for a PID controller.
+
+---
+
+**Imported by:**
+- [App](../../app.md)
+- [PID Controller](../infrastructure/pid_controller.md)

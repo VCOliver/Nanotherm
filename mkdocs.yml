@@ -71,6 +71,7 @@ plugins:
 
 
 markdown_extensions:
+  - admonition
   - pymdownx.emoji:
         emoji_index: !!python/name:material.extensions.emoji.twemoji
         emoji_generator: !!python/name:material.extensions.emoji.to_svg
@@ -96,4 +97,12 @@ nav:
       - entities:
         - controller: reference/core/entities/controller.md
         - Discrete Transfer Function: reference/core/entities/DTransferFunction.md
-    
+        - Input Gateway: reference/core/entities/input_gateway.md
+    - infrastructure:
+      - controllers:
+        - PID Controller: reference/core/infrastructure/pid_controller.md
+      - gateways:
+        - Data Gateway: reference/core/infrastructure/gateways.md
+        - Simulation Gateway: reference/core/infrastructure/simulation_gateway.md
+    - services:
+      - control_loop: reference/core/services/control_loop.md

@@ -13,6 +13,8 @@ Control loop service implementation with interrupt-like timing.
 import time
 import threading
 from logging import getLogger
+from typing import Optional, List, Dict, Any
+
 from nanotherm.infrastructure.controllers import PIDController
 from nanotherm.core.entities.inputGateway import I_HALGateway
 
@@ -24,9 +26,31 @@ class ControlLoop:
     
     Handles the execution of the control loop with interrupt-like timing,
     measurement acquisition, and actuation.
+    
+    Attributes:
+        controller (PIDController): The PID controller instance.
+        sample_time (float): The control loop sample time in seconds.
+        hal (I_HALGateway): Hardware abstraction layer gateway for measurements.
+        _simulation (bool): Whether the loop is running in simulation mode.
+        _simulation_data (List[Dict[str, Any]]): Collected simulation data.
     """
     
-    def __init__(self, controller: PIDController, sample_time: float, gateway: I_HALGateway, simulating: bool = False) -> None:
+    def __init__(
+        self, 
+        controller: PIDController, 
+        sample_time: float, 
+        gateway: I_HALGateway, 
+        simulating: bool = False
+    ) -> None:
+        """
+        Initialize the control loop.
+        
+        Args:
+            controller (PIDController): The PID controller instance.
+            sample_time (float): The control loop sample time in seconds.
+            gateway (I_HALGateway): Hardware abstraction layer gateway.
+            simulating (bool, optional): Whether to run in simulation mode. Defaults to False.
+        """
         self.controller = controller
         self.sample_time = sample_time
         self.hal = gateway
@@ -38,7 +62,10 @@ class ControlLoop:
         self._simulation_data = []  # Store simulation results
 
     def start(self) -> None:
-        """Start the control loop execution with interrupt-like timing."""
+        """
+        Start the control loop execution with interrupt-like timing.
+        Spawns a background thread to periodically execute the control logic.
+        """
         if self._timer_thread is None or not self._timer_thread.is_alive():
             
             self._stop_event.clear()
@@ -57,7 +84,9 @@ class ControlLoop:
             log.info(f'Control loop started with {self.sample_time*1000:.1f}ms interrupt interval')
 
     def stop(self) -> None:
-        """Stop the control loop execution and wait for thread to finish."""
+        """
+        Stop the control loop execution and wait for the thread to finish.
+        """
         self._stop_event.set()
         
         if self._timer_thread is not None:
@@ -67,29 +96,48 @@ class ControlLoop:
         log.info('Control loop terminated.')
             
     def _internal_stop(self) -> None:
-        """Internal method to stop the control loop."""
+        """
+        Internal method to stop the control loop.
+        """
         self._stop_event.set()
         log.info('Control loop stopped internally.')
         
     def thread_is_alive(self) -> bool:
-        """Check if the control loop thread is still running."""
+        """
+        Check if the control loop thread is still running.
+        
+        Returns:
+            bool: True if the control loop thread is alive, False otherwise.
+        """
         return self._timer_thread is not None and self._timer_thread.is_alive()
     
-    def wait_for_completion(self):
-        """Wait for the control loop thread to finish."""
+    def wait_for_completion(self) -> None:
+        """
+        Wait for the control loop thread to finish execution.
+        """
         if self._timer_thread is not None:
             self._timer_thread.join()
 
-    def get_simulation_data(self):
-        """Get the collected simulation data."""
+    def get_simulation_data(self) -> List[Dict[str, Any]]:
+        """
+        Get the collected simulation data.
+        
+        Returns:
+            List[Dict[str, Any]]: A copy of the simulation data collected during the run.
+        """
         return self._simulation_data.copy()
     
-    def clear_simulation_data(self):
-        """Clear the simulation data."""
+    def clear_simulation_data(self) -> None:
+        """
+        Clear the simulation data.
+        """
         self._simulation_data.clear()
 
     def _timer_worker(self) -> None:
-        """Timer thread that periodically calls the control loop directly."""
+        """
+        Timer thread that periodically calls the control loop directly.
+        Handles timing and stop event checking.
+        """
         log.info(f"Timer thread started: {threading.current_thread().name}")
         
         next_time = time.monotonic()
@@ -109,7 +157,10 @@ class ControlLoop:
         log.info("Timer thread stopped")
 
     def _run(self) -> None:
-        """Main control loop execution - called on each 'interrupt'."""
+        """
+        Main control loop execution - called on each 'interrupt'.
+        Computes control action, reads measurements, logs data, and checks for simulation end.
+        """
         if self._stop_event.is_set():
             return
 

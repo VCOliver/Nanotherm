@@ -17,7 +17,7 @@ and lifecycle management.
 from datetime import datetime
 import logging
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, List, Optional, Tuple
 
 import pandas as pd
 from nanotherm.core.domain.pid_params import PIDParams
@@ -36,7 +36,7 @@ class App:
     Handles initialization and execution of the core application logic.
     
     Attributes:
-        config (Dict[str, Any]): Configuration dictionary containing application settings
+        config (Dict[str, Any]): Configuration dictionary containing application settings.
     """
     
     def __init__(self, config: Dict[str, Any]) -> None:
@@ -44,7 +44,7 @@ class App:
         Initialize the application with the given configuration.
         
         Args:
-            config: Dictionary containing application configuration settings
+            config (Dict[str, Any]): Dictionary containing application configuration settings.
         """
         self.config = config
         log.info('Starting main application.')
@@ -54,7 +54,8 @@ class App:
         Execute the main application logic.
         
         This method starts the main processing loop and handles the core
-        application functionality.
+        application functionality, including initializing the control system,
+        running the simulation, and saving results.
         """
         gains = list(self.config['pid'].values())
         pid_params = PIDParams(*gains)
@@ -106,16 +107,23 @@ class App:
             log.error(f"Failed to save results: {e}")
                 
 
-    def save_simulation_results(self, simulation_data, output_dir='data/output'):
+    def save_simulation_results(
+        self, 
+        simulation_data: List[Dict[str, Any]], 
+        output_dir: str = 'data/output'
+    ) -> str:
         """
-        Save simulation results to CSV and Excel files using pandas.
+        Save simulation results to a CSV file using pandas.
         
         Args:
-            simulation_data (list): List of dictionaries containing simulation data
-            output_dir (str): Directory to save the output files
+            simulation_data (List[Dict[str, Any]]): List of dictionaries containing simulation data.
+            output_dir (str, optional): Directory to save the output files. Defaults to 'data/output'.
         
         Returns:
-            tuple: (csv_path, excel_path) - paths to the saved files
+            str: Path to the saved CSV file.
+        
+        Raises:
+            Exception: If saving fails for any reason.
         """
         try:
             # Create output directory if it doesn't exist
