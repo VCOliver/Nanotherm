@@ -118,9 +118,16 @@ class PIDController(IController):
         dt = timestamp - self._last_time if self._last_time is not None else self.Ts
         
         error = self.setpoint - measurement
-        # Apply control law using transfer function
-        u = ctrl.forced_response(self._tf, T=[0, dt], U=[error]) # type: ignore
-        return float(u.outputs[-1]) 
+    
+        # PID computation
+        self._integral += error * dt
+        derivative = (error - self._last_error) / dt if self._last_error is not None else 0
+        
+        u = self.kp * error + self.ki * self._integral + self.kd * derivative
+        
+        self._last_error = error
+        self._last_time = timestamp
+        return u
 
     def step_response(self, t_final: float) -> Tuple[np.ndarray, np.ndarray]:
         """

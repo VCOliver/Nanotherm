@@ -66,7 +66,7 @@ class CSV_HALGateway(I_HALGateway):
         assert index_ is None or isinstance(index_, int), "index_ should be of type 'int' or None"
         assert isinstance(input_id, (str, int)), "input_id should be of type 'str' or 'int'"
         
-        if self.__index == self._data_len:
+        if self.__index == self._data_len-1:
             log.info('No more data to be read from CSV file.')
             log.debug(f'Final index read from {self.__path}: {self.__index}.')
             self.__reach_end = True
@@ -83,7 +83,7 @@ class CSV_HALGateway(I_HALGateway):
             
         current_row = self._simul_data.iloc[index]
         value = current_row[input_id] 
-        log.debug(f'Value read from index {index}: {value}')
+        #log.debug(f'Value read from index {index}: {value}')
         
         return float(value)
     
