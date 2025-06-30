@@ -13,22 +13,26 @@
       
       
       
+        <link rel="prev" href="../../../app/">
       
       
-      <link rel="icon" href="/assets/images/favicon.png">
+        <link rel="next" href="../transferFunction/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
     
     
       
-        <title>Nanotherm Docs</title>
+        <title>pid_params - Nanotherm Docs</title>
       
     
     
     
-      <link rel="stylesheet" href="/assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.342714a4.min.css">
       
         
-        <link rel="stylesheet" href="/assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -51,9 +55,9 @@
       
     
     
-      <link rel="stylesheet" href="/assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("/",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -78,6 +82,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#transfer-function-domain-models" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -90,7 +99,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/." title="Nanotherm Docs" class="md-header__button md-logo" aria-label="Nanotherm Docs" data-md-component="logo">
+    <a href="../../../.." title="Nanotherm Docs" class="md-header__button md-logo" aria-label="Nanotherm Docs" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -110,7 +119,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              pid_params
             
           </span>
         </div>
@@ -215,7 +224,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/." class="md-tabs__link">
+      <a href="../../../.." class="md-tabs__link">
         
   
   
@@ -234,7 +243,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/about/" class="md-tabs__link">
+      <a href="../../../../about/" class="md-tabs__link">
         
   
   
@@ -251,11 +260,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="/reference/config/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../../config/" class="md-tabs__link">
           
   
   
@@ -297,7 +308,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/." title="Nanotherm Docs" class="md-nav__button md-logo" aria-label="Nanotherm Docs" data-md-component="logo">
+    <a href="../../../.." title="Nanotherm Docs" class="md-nav__button md-logo" aria-label="Nanotherm Docs" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -327,7 +338,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/." class="md-nav__link">
+      <a href="../../../.." class="md-nav__link">
         
   
   
@@ -349,7 +360,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/about/" class="md-nav__link">
+      <a href="../../../../about/" class="md-nav__link">
         
   
   
@@ -368,24 +379,29 @@
       
   
   
+    
   
   
+  
     
     
     
     
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -398,7 +414,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Code Reference
@@ -412,7 +428,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/reference/config/" class="md-nav__link">
+      <a href="../../../config/" class="md-nav__link">
         
   
   
@@ -435,7 +451,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/reference/platform/" class="md-nav__link">
+      <a href="../../../platform/" class="md-nav__link">
         
   
   
@@ -458,7 +474,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/reference/main/" class="md-nav__link">
+      <a href="../../../main/" class="md-nav__link">
         
   
   
@@ -481,7 +497,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/reference/app/" class="md-nav__link">
+      <a href="../../../app/" class="md-nav__link">
         
   
   
@@ -501,6 +517,8 @@
                 
   
   
+    
+  
   
   
     
@@ -511,11 +529,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" checked>
         
           
           <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
@@ -531,7 +549,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3_5">
             <span class="md-nav__icon md-icon"></span>
             core
@@ -542,6 +560,8 @@
                 
   
   
+    
+  
   
   
     
@@ -552,11 +572,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5_1" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5_1" checked>
         
           
           <label class="md-nav__link" for="__nav_3_5_1" id="__nav_3_5_1_label" tabindex="0">
@@ -572,7 +592,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_5_1_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_5_1_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3_5_1">
             <span class="md-nav__icon md-icon"></span>
             domain
@@ -583,10 +603,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="/reference/core/domain/pid_params/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    pid_params
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -597,6 +639,92 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#code-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code Reference
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nanotherm.core.domain.pid_params" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;pid_params
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" pid_params">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nanotherm.core.domain.pid_params.PIDParams" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;PIDParams
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" PIDParams">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nanotherm.core.domain.pid_params.PIDParams.__str__" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__str__
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nanotherm.core.domain.pid_params.PIDParams.__repr__" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__repr__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Classes
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -609,7 +737,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/reference/core/domain/transferFunction/" class="md-nav__link">
+      <a href="../transferFunction/" class="md-nav__link">
         
   
   
@@ -681,7 +809,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/reference/core/entities/controller/" class="md-nav__link">
+      <a href="../../entities/controller/" class="md-nav__link">
         
   
   
@@ -704,7 +832,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/reference/core/entities/DTransferFunction/" class="md-nav__link">
+      <a href="../../entities/DTransferFunction/" class="md-nav__link">
         
   
   
@@ -727,7 +855,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/reference/core/entities/input_gateway/" class="md-nav__link">
+      <a href="../../entities/input_gateway/" class="md-nav__link">
         
   
   
@@ -848,7 +976,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/reference/core/infrastructure/pid_controller/" class="md-nav__link">
+      <a href="../../infrastructure/pid_controller/" class="md-nav__link">
         
   
   
@@ -920,7 +1048,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/reference/core/infrastructure/gateways/" class="md-nav__link">
+      <a href="../../infrastructure/gateways/" class="md-nav__link">
         
   
   
@@ -943,7 +1071,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/reference/core/infrastructure/simulation_gateway/" class="md-nav__link">
+      <a href="../../infrastructure/simulation_gateway/" class="md-nav__link">
         
   
   
@@ -1023,7 +1151,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/reference/core/services/control_loop/" class="md-nav__link">
+      <a href="../../services/control_loop/" class="md-nav__link">
         
   
   
@@ -1066,8 +1194,218 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
-  <h1>404 - Not found</h1>
+                  
 
+
+  
+  
+
+
+<h1 id="transfer-function-domain-models">Transfer Function Domain Models</h1>
+<p>This module defines data structures for PID parameters used in Control System Modeling.</p>
+<h2 id="code-reference">Code Reference</h2>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="nanotherm.core.domain.pid_params" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <span class="doc doc-object-name doc-module-name">pid_params</span>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="nanotherm.core.domain.pid_params.PIDParams" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">PIDParams</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>Holds the proportional, integral, and derivative gains
+for a PID controller.</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src/nanotherm/core/domain/pid_params.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PIDParams</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Holds the proportional, integral, and derivative gains</span>
+<span class="sd">    for a PID controller.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kp</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">ki</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">kd</span><span class="p">:</span> <span class="nb">float</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a user-friendly string representation of PID parameters.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;PID(Kp=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">kp</span><span class="si">}</span><span class="s2">, Ki=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ki</span><span class="si">}</span><span class="s2">, Kd=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">kd</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a detailed string representation for debugging.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;PIDParams(kp=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">kp</span><span class="si">}</span><span class="s2">, ki=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ki</span><span class="si">}</span><span class="s2">, kd=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">kd</span><span class="si">}</span><span class="s2">)&quot;</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="nanotherm.core.domain.pid_params.PIDParams.__str__" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">__str__</span>
+
+
+</h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">__str__</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return a user-friendly string representation of PID parameters.</p>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/nanotherm/core/domain/pid_params.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a user-friendly string representation of PID parameters.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;PID(Kp=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">kp</span><span class="si">}</span><span class="s2">, Ki=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ki</span><span class="si">}</span><span class="s2">, Kd=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">kd</span><span class="si">}</span><span class="s2">)&quot;</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="nanotherm.core.domain.pid_params.PIDParams.__repr__" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">__repr__</span>
+
+
+</h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">__repr__</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return a detailed string representation for debugging.</p>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/nanotherm/core/domain/pid_params.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a detailed string representation for debugging.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;PIDParams(kp=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">kp</span><span class="si">}</span><span class="s2">, ki=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ki</span><span class="si">}</span><span class="s2">, kd=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">kd</span><span class="si">}</span><span class="s2">)&quot;</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="classes">Classes</h2>
+<ul>
+<li><code>PIDParams</code>: Holds the proportional, integral, and derivative gains for a PID controller.</li>
+</ul>
+<hr />
+<p><strong>Imported by:</strong>
+- <a href="../../../app/">App</a>
+- <a href="../../infrastructure/pid_controller/">PID Controller</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
               </article>
             </div>
           
@@ -1085,6 +1423,44 @@
       
         <footer class="md-footer">
   
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../../app/" class="md-footer__link md-footer__link--prev" aria-label="Previous: app">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                app
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../transferFunction/" class="md-footer__link md-footer__link--next" aria-label="Next: transferFunction">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                transferFunction
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
     
   
   <div class="md-footer-meta md-typeset">
@@ -1128,10 +1504,10 @@
     
     
       
-      <script id="__config" type="application/json">{"base": "/", "features": ["toc.integrate", "toc.follow", "navigation.tabs", "navigation.tabs.sticky", "navigation.footer", "navigation.instant", "navigation.top", "content.code.annotate"], "search": "/assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../../../..", "features": ["toc.integrate", "toc.follow", "navigation.tabs", "navigation.tabs.sticky", "navigation.footer", "navigation.instant", "navigation.top", "content.code.annotate"], "search": "../../../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="/assets/javascripts/bundle.13a4f30d.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.13a4f30d.min.js"></script>
       
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
       
