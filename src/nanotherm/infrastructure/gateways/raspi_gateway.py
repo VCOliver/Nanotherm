@@ -16,6 +16,7 @@ for radiofrequency ablation control systems.
 
 import logging
 import time
+import math
 from typing import Optional, Union, Dict, Any
 from nanotherm.core.entities.inputGateway import I_HALGateway
 
@@ -159,7 +160,7 @@ class RaspberryPiHALGateway(I_HALGateway):
         if input_id == 'Impedancia' or input_id == 0:
             # Simulate impedance changing over time (typical RFA pattern)
             base_impedance = 500.0
-            variation = 50.0 * (0.5 + 0.5 * time.sin(time_delta * 0.1))
+            variation = 50.0 * (0.5 + 0.5 * math.sin(time_delta * 0.1))
             value = base_impedance + variation
             
         elif input_id == 'Temperature' or input_id == 1:
