@@ -142,14 +142,13 @@ class App:
                 stats_info = {
                     'total_iterations': len(df),
                     'simulation_duration': df['timestamp'].max() if not df.empty else 0,
-                    'final_measurement': df['measurement'].iloc[-1] if not df.empty else 0,
+                    'final_measurement': df['measurement'].iloc[-1] if not df.empty else 0, # type: ignore
                     'avg_output': df['measurement'].mean() if not df.empty else 0,
                     'std_output': df['measurement'].std() if not df.empty else 0,
                     'max_output': df['measurement'].max() if not df.empty else 0,
                     'min_output': df['measurement'].min() if not df.empty else 0,
                 }
                 
-                # Optionally, rename columns for CSV output only
                 df_out = df.rename(columns={
                     'timestamp': 'timestamp (s)',
                     'resistence': 'resistance (Ohm)',
