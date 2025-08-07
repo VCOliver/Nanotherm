@@ -173,7 +173,11 @@ class ControlLoop:
                 self._timestamp = timestamp
             control_action = self.controller.compute(self._measurement, self._timestamp)
             resistance = self.hal.read_value()
-            self._measurement = control_action**2 / resistance
+            measurement = control_action**2 / resistance
+            
+            if measurement >= self.controller.setpoint*1.25:
+                log.error("Roll-off detected!")
+                raise
 
             # Log simulation data if simulating
             if self._simulation:
@@ -184,8 +188,10 @@ class ControlLoop:
                     'resistence': resistance,
                     'control_action': control_action,
                     'setpoint': setpoint,
-                    'measurement': self._measurement,
+                    'measurement': measurement,
                 })
+                
+            self._measurement = measurement
 
             # Check simulation end
             if self._simulation and getattr(self.hal, 'reach_end', False):
