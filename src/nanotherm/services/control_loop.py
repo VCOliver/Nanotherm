@@ -172,8 +172,22 @@ class ControlLoop:
             else:
                 self._timestamp = timestamp
             control_action = self.controller.compute(self._measurement, self._timestamp)
-            resistance = self.hal.read_value()
-            measurement = control_action**2 / resistance
+            
+            # Read voltage and current to calculate resistance
+            voltage = self.hal.read_value(input_id='Voltage')
+            current = self.hal.read_value(input_id='Current')
+            
+            # Calculate resistance: R = V / I
+            if current > 0.001:  # Avoid division by zero
+                resistance = voltage / current
+            else:
+                resistance = 9999.0  # High resistance when no current
+                
+            # Calculate power measurement: P = V^2 / R = V * I
+            measurement = voltage * current
+            
+            # Write control action to hardware (RF power control)
+            self.hal.write_value('control_action', control_action)
             
             if measurement >= self.controller.setpoint*1.25:
                 log.error("Roll-off detected!")
@@ -185,7 +199,9 @@ class ControlLoop:
                 
                 self._simulation_data.append({
                     'timestamp': self._timestamp,
-                    'resistence': resistance,
+                    'voltage': voltage,
+                    'current': current,
+                    'resistance': resistance,
                     'control_action': control_action,
                     'setpoint': setpoint,
                     'measurement': measurement,

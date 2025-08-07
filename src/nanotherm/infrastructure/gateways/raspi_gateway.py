@@ -24,16 +24,16 @@ log = logging.getLogger(__name__)
 
 try:
     import RPi.GPIO as GPIO
-    import spidev
     import board
     import busio
     import adafruit_ads1x15.ads1115 as ADS
     from adafruit_ads1x15.analog_in import AnalogIn
+    import adafruit_pcf8591
     HAS_GPIO = True
-    log.debug("RPi.GPIO, spidev, and ADS1115 libraries imported successfully")
+    log.debug("RPi.GPIO, ADS1115, and PCF8591 libraries imported successfully")
 except ImportError as e:
     HAS_GPIO = False
-    log.warning(f"RPi.GPIO, spidev, or ADS1115 libraries not available: {e}")
+    log.warning(f"RPi.GPIO, ADS1115, or PCF8591 libraries not available: {e}")
     log.warning("Running in mock mode - GPIO operations will be simulated")
 
 
@@ -51,40 +51,36 @@ class RaspberryPiHALGateway(I_HALGateway):
     """
     
     def __init__(self, 
-                 adc_channel: int = 0,
-                 dac_channel: int = 1,
+                 voltage_channel: int = 0,
+                 current_channel: int = 1,
                  power_control_pin: int = 18,
                  status_led_pin: int = 24,
-                 spi_bus: int = 0,
-                 spi_device: int = 0,
                  ads1115_address: int = 0x48,
+                 pcf8591_address: int = 0x49,
                  reference_voltage: float = 5.0,
-                 adc_resolution: int = 65536,
                  adc_gain: int = 1,
                  mock_mode: bool = False):
         """
-        Initialize the Raspberry Pi HAL Gateway with ADS1115 ADC.
+        Initialize the Raspberry Pi HAL Gateway with ADS1115 ADC and PCF8591 DAC.
         
         Args:
-            adc_channel: ADS1115 ADC channel for reading sensor values (0-3, default: 0)
-            dac_channel: SPI DAC channel for power control (default: 1)
+            voltage_channel: ADS1115 channel for voltage reading (A0 = 0, default: 0)
+            current_channel: ADS1115 channel for current reading (A1 = 1, default: 1)
             power_control_pin: GPIO pin for RF power control (default: 18)
             status_led_pin: GPIO pin for status LED (default: 24)
-            spi_bus: SPI bus number for DAC (default: 0)
-            spi_device: SPI device number for DAC (default: 0)
-            ads1115_address: I2C address of ADS1115 (default: 0x48)
+            ads1115_address: I2C address of ADS1115 ADC (default: 0x48)
+            pcf8591_address: I2C address of PCF8591 DAC (default: 0x49)
             reference_voltage: ADC reference voltage for ADS1115 (default: 5.0V)
-            adc_resolution: ADC resolution (16-bit ADS1115 = 65536)
             adc_gain: ADS1115 gain setting (1=±4.096V, 2=±2.048V, etc.)
             mock_mode: Force mock mode even if GPIO is available (default: False)
         """
-        self.adc_channel = adc_channel
-        self.dac_channel = dac_channel
+        self.voltage_channel = voltage_channel
+        self.current_channel = current_channel
         self.power_control_pin = power_control_pin
         self.status_led_pin = status_led_pin
         self.ads1115_address = ads1115_address
+        self.pcf8591_address = pcf8591_address
         self.reference_voltage = reference_voltage
-        self.adc_resolution = adc_resolution
         self.adc_gain = adc_gain
         
         # Determine if we should run in mock mode
@@ -95,8 +91,7 @@ class RaspberryPiHALGateway(I_HALGateway):
             self._initialize_mock_mode()
         else:
             self._initialize_gpio()
-            self._initialize_i2c()  # For ADS1115
-            self._initialize_spi(spi_bus, spi_device)  # For DAC
+            self._initialize_i2c()  # For ADS1115 and PCF8591
             
         log.info(f"Raspberry Pi HAL initialized (mock_mode={self.mock_mode})")
     
@@ -122,7 +117,7 @@ class RaspberryPiHALGateway(I_HALGateway):
             self._initialize_mock_mode()
     
     def _initialize_i2c(self) -> None:
-        """Initialize I2C interface for ADS1115 ADC communication."""
+        """Initialize I2C interface for ADS1115 ADC and PCF8591 DAC communication."""
         try:
             # Initialize I2C bus
             self.i2c = busio.I2C(board.SCL, board.SDA)
@@ -131,34 +126,26 @@ class RaspberryPiHALGateway(I_HALGateway):
             self.ads = ADS.ADS1115(self.i2c, address=self.ads1115_address)
             self.ads.gain = self.adc_gain
             
-            # Create analog input channel
-            self.adc_input = AnalogIn(self.ads, getattr(ADS, f'P{self.adc_channel}'))
+            # Create analog input channels for voltage and current
+            self.voltage_input = AnalogIn(self.ads, getattr(ADS, f'P{self.voltage_channel}'))
+            self.current_input = AnalogIn(self.ads, getattr(ADS, f'P{self.current_channel}'))
+            
+            # Initialize PCF8591 DAC
+            self.pcf8591 = adafruit_pcf8591.PCF8591(self.i2c, address=self.pcf8591_address)
             
             log.debug(f"ADS1115 ADC initialized successfully on I2C address 0x{self.ads1115_address:02x}")
-            log.debug(f"ADC configured: Channel {self.adc_channel}, Gain {self.adc_gain}")
+            log.debug(f"ADS1115 configured: Voltage channel {self.voltage_channel}, Current channel {self.current_channel}, Gain {self.adc_gain}")
+            log.debug(f"PCF8591 DAC initialized successfully on I2C address 0x{self.pcf8591_address:02x}")
             
         except Exception as e:
-            log.error(f"Failed to initialize ADS1115 ADC: {e}")
-            self.mock_mode = True
-            self._initialize_mock_mode()
-    
-    def _initialize_spi(self, spi_bus: int, spi_device: int) -> None:
-        """Initialize SPI interface for ADC/DAC communication."""
-        try:
-            self.spi = spidev.SpiDev()
-            self.spi.open(spi_bus, spi_device)
-            self.spi.max_speed_hz = 1000000  # 1MHz
-            self.spi.mode = 0
-            log.debug("SPI interface initialized successfully")
-            
-        except Exception as e:
-            log.error(f"Failed to initialize SPI: {e}")
+            log.error(f"Failed to initialize ADS1115 ADC or PCF8591 DAC: {e}")
             self.mock_mode = True
             self._initialize_mock_mode()
     
     def _initialize_mock_mode(self) -> None:
         """Initialize mock mode with simulated values."""
-        self._mock_sensor_value = 500.0  # Simulated impedance value in Ohms
+        self._mock_voltage = 2.5  # Simulated voltage in V
+        self._mock_current = 1.0  # Simulated current in A
         self._mock_power_output = 0.0
         self._mock_timestamp = time.time()
         log.debug("Mock mode initialized with default values")
@@ -167,35 +154,53 @@ class RaspberryPiHALGateway(I_HALGateway):
                    index_: Optional[int] = None, 
                    input_id: Union[str, int] = 'Impedancia') -> float:
         """
-        Read a value from the hardware sensor (ADC).
+        Read a value from the hardware sensors (ADS1115).
         
-        For RFA applications, this typically reads impedance values from 
-        tissue sensors to monitor treatment progress.
+        For RFA applications, this reads voltage and current from sensors 
+        and can calculate derived values like impedance and power.
         
         Args:
             index_: Not used in hardware mode (compatibility with simulation)
-            input_id: Sensor identifier ('Impedancia', 'Temperature', etc.)
+            input_id: Sensor identifier ('Impedancia', 'Voltage', 'Current', 'Power', etc.)
             
         Returns:
-            float: The sensor reading (e.g., impedance in Ohms)
+            float: The sensor reading or calculated value
         """
         if self.mock_mode:
             return self._read_mock_value(input_id)
         else:
-            return self._read_adc_value()
+            return self._read_sensor_value(input_id)
     
     def _read_mock_value(self, input_id: Union[str, int]) -> float:
         """Read a simulated sensor value for testing."""
         current_time = time.time()
         time_delta = current_time - self._mock_timestamp
         
-        if input_id == 'Impedancia' or input_id == 0:
-            # Simulate impedance changing over time (typical RFA pattern)
-            base_impedance = 500.0
-            variation = 50.0 * (0.5 + 0.5 * math.sin(time_delta * 0.1))
-            value = base_impedance + variation
+        if input_id in ['Voltage', 'voltage', 0]:
+            # Simulate voltage changing over time
+            base_voltage = 2.5
+            variation = 0.5 * (0.5 + 0.5 * math.sin(time_delta * 0.1))
+            value = base_voltage + variation
             
-        elif input_id == 'Temperature' or input_id == 1:
+        elif input_id in ['Current', 'current', 1]:
+            # Simulate current changing over time
+            base_current = 1.0
+            variation = 0.2 * (0.5 + 0.5 * math.sin(time_delta * 0.15))
+            value = base_current + variation
+            
+        elif input_id in ['Impedancia', 'impedance', 'Impedance']:
+            # Calculate impedance from mock voltage and current
+            voltage = self._read_mock_value('Voltage')
+            current = self._read_mock_value('Current')
+            value = voltage / current if current > 0.001 else 9999.0
+            
+        elif input_id in ['Power', 'power']:
+            # Calculate power from mock voltage and current
+            voltage = self._read_mock_value('Voltage')
+            current = self._read_mock_value('Current')
+            value = voltage * current
+            
+        elif input_id in ['Temperature', 'temperature', 2]:
             # Simulate temperature reading
             base_temp = 37.0  # Body temperature
             heating = 30.0 * min(1.0, time_delta / 60.0)  # Heat up over 1 minute
@@ -208,50 +213,70 @@ class RaspberryPiHALGateway(I_HALGateway):
         log.debug(f"Mock reading {input_id}: {value}")
         return value
     
-    def _read_adc_value(self) -> float:
-        """Read actual ADC value from ADS1115 hardware."""
+    def _read_sensor_value(self, input_id: Union[str, int]) -> float:
+        """Read actual sensor value from I2C devices."""
         try:
-            # Read voltage directly from ADS1115
-            voltage = self.adc_input.voltage
-            
-            # Read raw ADC value for debugging
-            raw_value = self.adc_input.value
-            
-            # Convert voltage to impedance (assuming voltage divider circuit)
-            # This conversion depends on your specific sensor circuit
-            impedance = self._voltage_to_impedance(voltage)
-            
-            log.debug(f"ADS1115 reading - Raw: {raw_value}, Voltage: {voltage:.3f}V, Impedance: {impedance:.1f}Ω")
-            return impedance
-            
+            if input_id in ['Voltage', 'voltage', 0]:
+                # Read voltage from ADS1115 channel A0
+                chan = AnalogIn(self.ads, ADS.P0)
+                voltage = chan.voltage
+                log.debug(f"ADS1115 A0 voltage: {voltage:.3f}V")
+                return voltage
+                
+            elif input_id in ['Current', 'current', 1]:
+                # Read current from ADS1115 channel A1
+                chan = AnalogIn(self.ads, ADS.P1)
+                # Convert voltage to current based on sensor characteristics
+                # Assuming current sensor outputs voltage proportional to current
+                voltage = chan.voltage
+                # Example: if 1V = 1A (adjust based on actual sensor specs)
+                current = voltage  # Adjust this conversion factor as needed
+                log.debug(f"ADS1115 A1 current: {current:.3f}A (from {voltage:.3f}V)")
+                return current
+                
+            elif input_id in ['Impedancia', 'impedance', 'Impedance']:
+                # Calculate impedance from voltage and current
+                voltage = self._read_sensor_value('Voltage')
+                current = self._read_sensor_value('Current')
+                
+                if current > 0.001:  # Avoid division by zero
+                    impedance = voltage / current
+                else:
+                    impedance = 9999.0  # High impedance when no current
+                    
+                log.debug(f"Calculated impedance: {impedance:.3f}Ω")
+                return impedance
+                
+            elif input_id in ['Power', 'power']:
+                # Calculate power from voltage and current
+                voltage = self._read_sensor_value('Voltage')
+                current = self._read_sensor_value('Current')
+                power = voltage * current
+                log.debug(f"Calculated power: {power:.3f}W")
+                return power
+                
+            elif input_id in ['Temperature', 'temperature', 2]:
+                # Temperature could be read from additional ADC channel if available
+                # For now, use A2 if connected, otherwise return room temperature
+                try:
+                    chan = AnalogIn(self.ads, ADS.P2)
+                    voltage = chan.voltage
+                    # Convert voltage to temperature based on sensor type
+                    # Example for LM35: 10mV/°C
+                    temperature = voltage * 100.0  # Adjust based on actual sensor
+                    log.debug(f"Temperature sensor: {temperature:.1f}°C")
+                    return temperature
+                except:
+                    log.warning("Temperature sensor not available, returning room temperature")
+                    return 25.0  # Room temperature fallback
+                    
+            else:
+                log.warning(f"Unknown input_id: {input_id}, returning 0.0")
+                return 0.0
+                
         except Exception as e:
-            log.error(f"Failed to read ADS1115 value: {e}")
-            # Fallback to mock value
-            return self._read_mock_value('Impedancia')
-    
-    def _voltage_to_impedance(self, voltage: float) -> float:
-        """
-        Convert ADC voltage reading to impedance value.
-        
-        This function implements the specific conversion formula based on
-        your sensor circuit design. Modify according to your hardware setup.
-        
-        Args:
-            voltage: ADC voltage reading
-            
-        Returns:
-            float: Impedance value in Ohms
-        """
-        # Example conversion (modify based on your circuit)
-        # Assuming a voltage divider with known reference resistor
-        if voltage < 0.1:  # Avoid division by zero
-            return 9999.0  # High impedance
-            
-        # Example: R_tissue = R_ref * (V_ref - V_measured) / V_measured
-        reference_resistor = 1000.0  # 1kΩ reference
-        impedance = reference_resistor * (self.reference_voltage - voltage) / voltage
-        
-        return max(0.0, min(impedance, 9999.0))  # Clamp to reasonable range
+            log.error(f"Error reading sensor {input_id}: {e}")
+            return 0.0
     
     def write_value(self, output_id: str, value: float) -> None:
         """
@@ -293,23 +318,25 @@ class RaspberryPiHALGateway(I_HALGateway):
             log.error(f"Failed to write hardware value: {e}")
     
     def _set_rf_power(self, power_percent: float) -> None:
-        """Set RF power output via DAC or PWM."""
+        """Set RF power output via PCF8591 DAC."""
         # Clamp power to safe range
         power_percent = max(0.0, min(power_percent, 100.0))
         
         try:
-            # Convert percentage to DAC value (0-4095 for 12-bit DAC)
-            dac_value = int((power_percent / 100.0) * 4095)
+            if self.mock_mode:
+                log.debug(f"Mock mode: RF power set to {power_percent}%")
+                return
+                
+            # Convert percentage to DAC value (0-255 for 8-bit PCF8591 DAC)
+            dac_value = int((power_percent / 100.0) * 255)
             
-            # Send to DAC via SPI (example for MCP4922)
-            # Command format depends on your specific DAC
-            dac_command = [0x70 | ((dac_value >> 8) & 0x0F), dac_value & 0xFF]
-            self.spi.xfer2(dac_command)
+            # Set DAC output using PCF8591
+            self.pcf8591.dac_value = dac_value
             
-            log.debug(f"RF power set to {power_percent}% (DAC value: {dac_value})")
+            log.debug(f"RF power set to {power_percent}% (DAC value: {dac_value}/255)")
             
         except Exception as e:
-            log.error(f"Failed to set RF power: {e}")
+            log.error(f"Failed to set RF power via PCF8591: {e}")
     
     def _set_status_led(self, state: bool) -> None:
         """Control status LED."""
@@ -328,17 +355,13 @@ class RaspberryPiHALGateway(I_HALGateway):
             log.error(f"Failed to control power enable: {e}")
     
     def cleanup(self) -> None:
-        """Clean up GPIO, SPI, and I2C resources."""
-        if not self.mock_mode:
+        """Clean up GPIO and I2C resources."""
+        if not self.mock_mode and HAS_GPIO:
             try:
-                if hasattr(self, 'spi'):
-                    self.spi.close()
-                if hasattr(self, 'i2c'):
-                    self.i2c.deinit()
                 GPIO.cleanup()
-                log.info("Hardware resources cleaned up")
+                log.debug("GPIO resources cleaned up")
             except Exception as e:
-                log.error(f"Error during cleanup: {e}")
+                log.error(f"Error during GPIO cleanup: {e}")
     
     def __del__(self) -> None:
         """Destructor to ensure cleanup."""
