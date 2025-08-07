@@ -18,9 +18,9 @@ It provides functionality to set up logging based on different running modes
 (debug or deployment).
 """
 
-from nanotherm.config import load_config
+from nanotherm.config.settings import load_settings
 from nanotherm.config.platform import Platform
-from nanotherm.config.logger import setup_logging, test_setup   
+from nanotherm.config.logger import setup_logging_from_settings, test_setup   
 from nanotherm.app import App
 import logging 
 
@@ -33,13 +33,13 @@ def main():
     """
     
     platform = Platform.get_hardware_type()
-    config = load_config(platform)
-    setup_logging(config['logging'])
+    settings = load_settings(platform)
+    setup_logging_from_settings(settings.logging)
     
     logger = logging.getLogger(__name__)
     logger.info("Finished setup.")
     
-    app = App(config)
+    app = App(settings)
     app.run()
     
 if __name__=='__main__':

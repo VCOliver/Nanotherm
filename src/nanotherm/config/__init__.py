@@ -10,4 +10,43 @@
 #      http://www.apache.org/licenses/LICENSE-2.0
 #
 
-from .config import *
+"""
+Configuration module for nanotherm.
+
+This module provides Pydantic-based configuration management with support
+for TOML files, environment variables, and validation.
+"""
+
+# Export the new Pydantic settings as the primary interface
+from .settings import (
+    LoggingSettings,
+    PIDSettings, 
+    LiverTransferFunctionSettings,
+    ControlSystemSettings,
+    PlotsSettings,
+    NanothermSettings,
+    load_settings,
+)
+
+# Export logger setup functions
+from .logger import setup_logging_from_settings
+
+# Export platform utilities
+from .platform import Platform, HardwareType, HardwareError
+
+__all__ = [
+    # Settings classes
+    "LoggingSettings",
+    "PIDSettings", 
+    "LiverTransferFunctionSettings",
+    "ControlSystemSettings",
+    "PlotsSettings",
+    "NanothermSettings",
+    # Functions
+    "load_settings",
+    "setup_logging_from_settings",
+    # Platform
+    "Platform",
+    "HardwareType", 
+    "HardwareError",
+]

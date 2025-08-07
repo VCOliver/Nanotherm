@@ -18,7 +18,10 @@ import logging
 import colorlog
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from nanotherm.config.settings import LoggingSettings
 
 
 def setup_logging(config: Dict[str, Any]) -> None:
@@ -87,6 +90,15 @@ def setup_logging(config: Dict[str, Any]) -> None:
         )
         file_handler.setFormatter(logging.Formatter(fmt=format, datefmt=date_format))
         root_logger.addHandler(file_handler)
+
+
+def setup_logging_from_settings(logging_settings: "LoggingSettings") -> None:
+    """Configure the application's logging system using Pydantic settings."""
+    setup_logging({
+        "level": logging_settings.level,
+        "format": logging_settings.format,
+        "date_format": logging_settings.date_format
+    })
         
 def test_setup():
     """

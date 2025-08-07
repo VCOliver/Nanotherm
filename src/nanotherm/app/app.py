@@ -24,6 +24,7 @@ from nanotherm.core.domain.pid_params import PIDParams
 from nanotherm.infrastructure.controllers import PIDController
 from nanotherm.core.entities.DTransferFunction import DiscreteTransferFunction
 from nanotherm.config.platform import Platform, HardwareType, HardwareError
+from nanotherm.config.settings import NanothermSettings
 from nanotherm.infrastructure.gateways.simul_data_gateway import CSV_HALGateway
 from nanotherm.services.control_loop import ControlLoop
 
@@ -36,17 +37,17 @@ class App:
     Handles initialization and execution of the core application logic.
     
     Attributes:
-        config (Dict[str, Any]): Configuration dictionary containing application settings.
+        settings (NanothermSettings): Pydantic settings containing application configuration.
     """
     
-    def __init__(self, config: Dict[str, Any]) -> None:
+    def __init__(self, settings: NanothermSettings) -> None:
         """
         Initialize the application with the given configuration.
         
         Args:
-            config (Dict[str, Any]): Dictionary containing application configuration settings.
+            settings (NanothermSettings): Pydantic settings containing application configuration.
         """
-        self.config = config
+        self.settings = settings
         log.info('Starting main application.')
         
     def run(self) -> None:
@@ -57,15 +58,15 @@ class App:
         application functionality, including initializing the control system,
         running the simulation, and saving results.
         """
-        gains = list(self.config['pid'].values())
+        gains = [self.settings.pid.kp, self.settings.pid.ki, self.settings.pid.kd]
         pid_params = PIDParams(*gains)
         log.debug(f'PID gains set to {pid_params}')
-        Ts = self.config['control_system']['sampling_time']
+        Ts = self.settings.control_system.sampling_time
         
-        plant_tf = self.config['liver_tf']
-        plant = DiscreteTransferFunction(plant_tf['num'], plant_tf['den'], Ts)
+        plant_tf = self.settings.liver_tf
+        plant = DiscreteTransferFunction(plant_tf.num, plant_tf.den, Ts)
         
-        setpoint = self.config['control_system']['setpoint']
+        setpoint = self.settings.control_system.setpoint
         controller = PIDController(pid_params, plant, setpoint=setpoint, Ts=Ts)
         
         platform = Platform.get_hardware_type()
