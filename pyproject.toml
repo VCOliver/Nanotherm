@@ -18,13 +18,17 @@ dependencies = [
     "toml (>=0.10.2,<0.11.0)",
     # Raspberry Pi dependencies - only installed on ARM Linux platforms
     "RPi.GPIO (>=0.7.0) ; platform_machine in 'armv6l armv7l armv8l aarch64' and sys_platform == 'linux'",
-    "spidev (>=3.5) ; platform_machine in 'armv6l armv7l armv8l aarch64' and sys_platform == 'linux'"
+    "spidev (>=3.5) ; platform_machine in 'armv6l armv7l armv8l aarch64' and sys_platform == 'linux'",
+    "adafruit-circuitpython-ads1x15 (>=2.2.21) ; platform_machine in 'armv6l armv7l armv8l aarch64' and sys_platform == 'linux'",
+    "adafruit-blinka (>=8.22.2) ; platform_machine in 'armv6l armv7l armv8l aarch64' and sys_platform == 'linux'"
 ]
 
 [project.optional-dependencies]
 raspberry-pi = [
     "RPi.GPIO (>=0.7.0)",
-    "spidev (>=3.5)"
+    "spidev (>=3.5)",
+    "adafruit-circuitpython-ads1x15 (>=2.2.21)",
+    "adafruit-blinka (>=8.22.2)"
 ]
 
 [tool.poetry]

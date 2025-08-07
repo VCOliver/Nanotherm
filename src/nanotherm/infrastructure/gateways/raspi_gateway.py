@@ -25,11 +25,15 @@ log = logging.getLogger(__name__)
 try:
     import RPi.GPIO as GPIO
     import spidev
+    import board
+    import busio
+    import adafruit_ads1x15.ads1115 as ADS
+    from adafruit_ads1x15.analog_in import AnalogIn
     HAS_GPIO = True
-    log.debug("RPi.GPIO and spidev libraries imported successfully")
+    log.debug("RPi.GPIO, spidev, and ADS1115 libraries imported successfully")
 except ImportError as e:
     HAS_GPIO = False
-    log.warning(f"RPi.GPIO or spidev not available: {e}")
+    log.warning(f"RPi.GPIO, spidev, or ADS1115 libraries not available: {e}")
     log.warning("Running in mock mode - GPIO operations will be simulated")
 
 
@@ -53,29 +57,35 @@ class RaspberryPiHALGateway(I_HALGateway):
                  status_led_pin: int = 24,
                  spi_bus: int = 0,
                  spi_device: int = 0,
-                 reference_voltage: float = 3.3,
-                 adc_resolution: int = 1024,
+                 ads1115_address: int = 0x48,
+                 reference_voltage: float = 5.0,
+                 adc_resolution: int = 65536,
+                 adc_gain: int = 1,
                  mock_mode: bool = False):
         """
-        Initialize the Raspberry Pi HAL Gateway.
+        Initialize the Raspberry Pi HAL Gateway with ADS1115 ADC.
         
         Args:
-            adc_channel: SPI ADC channel for reading sensor values (default: 0)
+            adc_channel: ADS1115 ADC channel for reading sensor values (0-3, default: 0)
             dac_channel: SPI DAC channel for power control (default: 1)
             power_control_pin: GPIO pin for RF power control (default: 18)
             status_led_pin: GPIO pin for status LED (default: 24)
-            spi_bus: SPI bus number (default: 0)
-            spi_device: SPI device number (default: 0)
-            reference_voltage: ADC reference voltage (default: 3.3V)
-            adc_resolution: ADC resolution in bits (default: 1024 for 10-bit)
+            spi_bus: SPI bus number for DAC (default: 0)
+            spi_device: SPI device number for DAC (default: 0)
+            ads1115_address: I2C address of ADS1115 (default: 0x48)
+            reference_voltage: ADC reference voltage for ADS1115 (default: 5.0V)
+            adc_resolution: ADC resolution (16-bit ADS1115 = 65536)
+            adc_gain: ADS1115 gain setting (1=±4.096V, 2=±2.048V, etc.)
             mock_mode: Force mock mode even if GPIO is available (default: False)
         """
         self.adc_channel = adc_channel
         self.dac_channel = dac_channel
         self.power_control_pin = power_control_pin
         self.status_led_pin = status_led_pin
+        self.ads1115_address = ads1115_address
         self.reference_voltage = reference_voltage
         self.adc_resolution = adc_resolution
+        self.adc_gain = adc_gain
         
         # Determine if we should run in mock mode
         self.mock_mode = mock_mode or not HAS_GPIO
@@ -85,7 +95,8 @@ class RaspberryPiHALGateway(I_HALGateway):
             self._initialize_mock_mode()
         else:
             self._initialize_gpio()
-            self._initialize_spi(spi_bus, spi_device)
+            self._initialize_i2c()  # For ADS1115
+            self._initialize_spi(spi_bus, spi_device)  # For DAC
             
         log.info(f"Raspberry Pi HAL initialized (mock_mode={self.mock_mode})")
     
@@ -107,6 +118,27 @@ class RaspberryPiHALGateway(I_HALGateway):
             
         except Exception as e:
             log.error(f"Failed to initialize GPIO: {e}")
+            self.mock_mode = True
+            self._initialize_mock_mode()
+    
+    def _initialize_i2c(self) -> None:
+        """Initialize I2C interface for ADS1115 ADC communication."""
+        try:
+            # Initialize I2C bus
+            self.i2c = busio.I2C(board.SCL, board.SDA)
+            
+            # Initialize ADS1115 ADC
+            self.ads = ADS.ADS1115(self.i2c, address=self.ads1115_address)
+            self.ads.gain = self.adc_gain
+            
+            # Create analog input channel
+            self.adc_input = AnalogIn(self.ads, getattr(ADS, f'P{self.adc_channel}'))
+            
+            log.debug(f"ADS1115 ADC initialized successfully on I2C address 0x{self.ads1115_address:02x}")
+            log.debug(f"ADC configured: Channel {self.adc_channel}, Gain {self.adc_gain}")
+            
+        except Exception as e:
+            log.error(f"Failed to initialize ADS1115 ADC: {e}")
             self.mock_mode = True
             self._initialize_mock_mode()
     
@@ -177,28 +209,23 @@ class RaspberryPiHALGateway(I_HALGateway):
         return value
     
     def _read_adc_value(self) -> float:
-        """Read actual ADC value from hardware."""
+        """Read actual ADC value from ADS1115 hardware."""
         try:
-            # Read from MCP3008/MCP3208 ADC (common for Pi projects)
-            # Command format: [1, (8+channel)<<4, 0]
-            adc_command = [1, (8 + self.adc_channel) << 4, 0]
-            adc_response = self.spi.xfer2(adc_command)
+            # Read voltage directly from ADS1115
+            voltage = self.adc_input.voltage
             
-            # Convert response to digital value
-            adc_value = ((adc_response[1] & 3) << 8) + adc_response[2]
-            
-            # Convert to voltage
-            voltage = (adc_value / self.adc_resolution) * self.reference_voltage
+            # Read raw ADC value for debugging
+            raw_value = self.adc_input.value
             
             # Convert voltage to impedance (assuming voltage divider circuit)
             # This conversion depends on your specific sensor circuit
             impedance = self._voltage_to_impedance(voltage)
             
-            log.debug(f"ADC reading - Raw: {adc_value}, Voltage: {voltage:.3f}V, Impedance: {impedance:.1f}Ω")
+            log.debug(f"ADS1115 reading - Raw: {raw_value}, Voltage: {voltage:.3f}V, Impedance: {impedance:.1f}Ω")
             return impedance
             
         except Exception as e:
-            log.error(f"Failed to read ADC value: {e}")
+            log.error(f"Failed to read ADS1115 value: {e}")
             # Fallback to mock value
             return self._read_mock_value('Impedancia')
     
@@ -301,11 +328,13 @@ class RaspberryPiHALGateway(I_HALGateway):
             log.error(f"Failed to control power enable: {e}")
     
     def cleanup(self) -> None:
-        """Clean up GPIO and SPI resources."""
+        """Clean up GPIO, SPI, and I2C resources."""
         if not self.mock_mode:
             try:
                 if hasattr(self, 'spi'):
                     self.spi.close()
+                if hasattr(self, 'i2c'):
+                    self.i2c.deinit()
                 GPIO.cleanup()
                 log.info("Hardware resources cleaned up")
             except Exception as e:
