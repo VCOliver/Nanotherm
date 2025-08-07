@@ -18,6 +18,12 @@ dependencies = [
     "toml (>=0.10.2,<0.11.0)"
 ]
 
+[project.optional-dependencies]
+raspberry-pi = [
+    "RPi.GPIO (>=0.7.0)",
+    "spidev (>=3.5)"
+]
+
 [tool.poetry]
 packages = [{include = "nanotherm", from = "src"}]
 

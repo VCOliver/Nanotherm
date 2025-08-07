@@ -6,18 +6,64 @@
 #
 #      http://www.apache.org/licenses/LICENSE-2.0
 
-import warnings
-
 """
-Data Gateway interface and implementation placeholder.
+Data Gateway interface and implementations for different hardware platforms.
 
-..warning::
-    This module is a placeholder and will provide concrete data gateway classes for hardware integration in the future.
+This module provides concrete implementations of the HAL Gateway for different
+hardware platforms, with automatic platform detection and selection.
 """
 
-warnings.warn(
-    "The data_gateway module is a placeholder and will be implemented in the future.",
-    category=UserWarning,
-    stacklevel=2
-)
+import logging
+from typing import Optional, Union
+
+from nanotherm.config.settings import HardwareType, Platform, HardwareError
+from nanotherm.core.entities.inputGateway import I_HALGateway
+
+log = logging.getLogger(__name__)
+
+
+class GatewayFactory:
+    """Factory class for creating the appropriate HAL Gateway based on platform."""
+    
+    @staticmethod
+    def create_gateway(platform: HardwareType, **kwargs) -> I_HALGateway:
+        """
+        Create and return the appropriate HAL Gateway for the detected platform.
+        
+        Args:
+            platform: The hardware platform type
+            **kwargs: Additional arguments to pass to the gateway constructor
+            
+        Returns:
+            I_HALGateway: The appropriate gateway implementation
+            
+        Raises:
+            HardwareError: If the platform is not supported
+        """
+        if platform == HardwareType.DESKTOP:
+            from nanotherm.infrastructure.gateways.simul_data_gateway import CSV_HALGateway
+            csv_path = kwargs.get('csv_path', 'data/input/combined.csv')
+            return CSV_HALGateway(csv_path)
+            
+        elif platform == HardwareType.RASPBERRY_PI:
+            from nanotherm.infrastructure.gateways.raspi_gateway import RaspberryPiHALGateway
+            return RaspberryPiHALGateway(**kwargs)
+            
+        else:
+            raise HardwareError(f"Unsupported hardware platform: {platform}")
+
+
+def get_platform_gateway(**kwargs) -> I_HALGateway:
+    """
+    Convenience function to automatically detect platform and create appropriate gateway.
+    
+    Args:
+        **kwargs: Additional arguments to pass to the gateway constructor
+        
+    Returns:
+        I_HALGateway: The appropriate gateway implementation for the current platform
+    """
+    platform = Platform.get_hardware_type()
+    log.info(f"Detected platform: {platform}")
+    return GatewayFactory.create_gateway(platform, **kwargs)
 

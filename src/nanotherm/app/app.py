@@ -24,7 +24,7 @@ from nanotherm.core.domain.pid_params import PIDParams
 from nanotherm.infrastructure.controllers import PIDController
 from nanotherm.core.entities.DTransferFunction import DiscreteTransferFunction
 from nanotherm.config.settings import Platform, HardwareType, HardwareError, NanothermSettings
-from nanotherm.infrastructure.gateways.simul_data_gateway import CSV_HALGateway
+from nanotherm.infrastructure.gateways.data_gateway import get_platform_gateway
 from nanotherm.services.control_loop import ControlLoop
 
 log = logging.getLogger(__name__)
@@ -68,16 +68,22 @@ class App:
         setpoint = self.settings.control_system.setpoint
         controller = PIDController(pid_params, plant, setpoint=setpoint, Ts=Ts)
         
-        platform = Platform.get_hardware_type()
-        if platform == HardwareType.DESKTOP:
-            hal = CSV_HALGateway('data/input/combined.csv')
-        else:
-            log.warning('HAL for Raspberry Pi not yet implemented!')
-            raise HardwareError('Raspberry Pi not supported yet. Please use a desktop platform.')
+        # Automatically select the appropriate HAL based on platform
+        try:
+            hal = get_platform_gateway(csv_path='data/input/combined.csv')
+            current_platform = Platform.get_hardware_type()
+            log.info(f"Successfully initialized HAL for platform: {current_platform}")
+        except Exception as e:
+            log.error(f"Failed to initialize HAL: {e}")
+            raise
         
-        # Example: run control loop for a few iterations (or implement a stop condition)
-        loop = ControlLoop(controller, sample_time=0.01, gateway=hal, simulating=True)
-        log.info("Starting control loop simulation...")
+        # Determine if we're running in simulation mode based on platform
+        is_simulation = current_platform == HardwareType.DESKTOP
+        mode_description = "simulation" if is_simulation else "hardware control"
+        
+        # Initialize control loop with appropriate mode
+        loop = ControlLoop(controller, sample_time=0.01, gateway=hal, simulating=is_simulation)
+        log.info(f"Starting control loop in {mode_description} mode...")
         loop.start()
         
         try:
