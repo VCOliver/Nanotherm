@@ -178,7 +178,7 @@ class ControlLoop:
             current = self.hal.read_value(input_id='Current')
             
             # Calculate resistance: R = V / I
-            if current > 0.001:  # Avoid division by zero
+            if current > 0.0:  # Avoid division by zero
                 resistance = voltage / current
             else:
                 resistance = 9999.0  # High resistance when no current
@@ -190,6 +190,10 @@ class ControlLoop:
             self.hal.write_value('control_action', control_action)
             
             if measurement >= self.controller.setpoint*1.25:
+                log.error("Roll-off detected!")
+                raise
+            
+            if resistance >= 500:
                 log.error("Roll-off detected!")
                 raise
 
