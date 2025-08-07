@@ -47,7 +47,10 @@ class GatewayFactory:
             
         elif platform == HardwareType.RASPBERRY_PI:
             from nanotherm.infrastructure.gateways.raspi_gateway import RaspberryPiHALGateway
-            return RaspberryPiHALGateway(**kwargs)
+            # Filter out arguments that are not relevant for RaspberryPiHALGateway
+            raspi_kwargs = {k: v for k, v in kwargs.items() 
+                           if k not in ['csv_path']}  # Remove desktop-specific args
+            return RaspberryPiHALGateway(**raspi_kwargs)
             
         else:
             raise HardwareError(f"Unsupported hardware platform: {platform}")

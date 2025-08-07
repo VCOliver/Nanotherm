@@ -1,6 +1,6 @@
 [project]
 name = "nanotherm"
-version = "0.2.1"
+version = "0.3.1"
 description = "A project on Radiofrequency Ablation (RFA) by Metala Nanofluidos"
 authors = [
     {name = "VCOliver",email = "victorcruz.01@gmail.com"}
@@ -15,7 +15,10 @@ dependencies = [
     "pydantic-settings (>=2.0.0,<3.0.0)",
     "control (>=0.10.1,<0.11.0)",
     "colorlog (>=6.9.0,<7.0.0)",
-    "toml (>=0.10.2,<0.11.0)"
+    "toml (>=0.10.2,<0.11.0)",
+    # Raspberry Pi dependencies - only installed on ARM Linux platforms
+    "RPi.GPIO (>=0.7.0) ; platform_machine in 'armv6l armv7l armv8l aarch64' and sys_platform == 'linux'",
+    "spidev (>=3.5) ; platform_machine in 'armv6l armv7l armv8l aarch64' and sys_platform == 'linux'"
 ]
 
 [project.optional-dependencies]
@@ -32,7 +35,6 @@ packages = [{include = "nanotherm", from = "src"}]
 pytest = "^8.4.0"
 pandas = "^2.3.0"
 pre-commit = "^4.2.0"
-
 
 [tool.poetry.group.docs.dependencies]
 mkdocs = "^1.6.1"
