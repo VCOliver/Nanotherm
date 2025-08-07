@@ -18,9 +18,7 @@ It provides functionality to set up logging based on different running modes
 (debug or deployment).
 """
 
-from nanotherm.config.settings import load_settings
-from nanotherm.config.platform import Platform
-from nanotherm.config.logger import setup_logging_from_settings, test_setup   
+from nanotherm.config.settings import load_settings, Platform, setup_logging_from_settings
 from nanotherm.app import App
 import logging 
 

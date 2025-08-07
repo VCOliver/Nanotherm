@@ -12,14 +12,22 @@ Pydantic settings configuration for nanotherm.
 
 This module defines the application configuration using Pydantic models
 with support for environment variables, .env files, and TOML configuration.
+
+This module serves as the main entry point for all configuration-related functionality,
+re-exporting platform utilities and logger functions for convenience.
 """
 
 from pathlib import Path
-from typing import List, Literal
+from typing import List, Literal, TYPE_CHECKING
 from pydantic import BaseModel, Field, ConfigDict
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from nanotherm.config.platform import HardwareType
+# Re-export platform utilities
+from nanotherm.config.platform import HardwareType, Platform, HardwareError
+
+# Import logger function for re-export
+if TYPE_CHECKING:
+    from nanotherm.config.logger import LoggingSettings as _LoggingSettings
 
 
 class LoggingSettings(BaseModel):
@@ -184,3 +192,10 @@ def load_settings(platform: HardwareType, config_file_path: Path | None = None) 
     settings.platform = platform
     
     return settings
+
+
+# Re-export logger function for convenience
+def setup_logging_from_settings(logging_settings: "LoggingSettings") -> None:
+    """Configure the application's logging system using Pydantic settings."""
+    from nanotherm.config.logger import setup_logging_from_settings as _setup_logging
+    return _setup_logging(logging_settings)

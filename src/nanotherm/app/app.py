@@ -23,8 +23,7 @@ import pandas as pd
 from nanotherm.core.domain.pid_params import PIDParams
 from nanotherm.infrastructure.controllers import PIDController
 from nanotherm.core.entities.DTransferFunction import DiscreteTransferFunction
-from nanotherm.config.platform import Platform, HardwareType, HardwareError
-from nanotherm.config.settings import NanothermSettings
+from nanotherm.config.settings import Platform, HardwareType, HardwareError, NanothermSettings
 from nanotherm.infrastructure.gateways.simul_data_gateway import CSV_HALGateway
 from nanotherm.services.control_loop import ControlLoop
 

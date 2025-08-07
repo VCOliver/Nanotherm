@@ -15,24 +15,12 @@ Configuration module for nanotherm.
 
 This module provides Pydantic-based configuration management with support
 for TOML files, environment variables, and validation.
+
+All configuration-related functionality is available through the settings module.
 """
 
-# Export the new Pydantic settings as the primary interface
-from .settings import (
-    LoggingSettings,
-    PIDSettings, 
-    LiverTransferFunctionSettings,
-    ControlSystemSettings,
-    PlotsSettings,
-    NanothermSettings,
-    load_settings,
-)
-
-# Export logger setup functions
-from .logger import setup_logging_from_settings
-
-# Export platform utilities
-from .platform import Platform, HardwareType, HardwareError
+# Re-export everything from settings for convenience
+from .settings import *
 
 __all__ = [
     # Settings classes
